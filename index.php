@@ -1,3 +1,5 @@
+
+
 <html >
     <meta charset="UTF-8">
 <head>
@@ -13,7 +15,7 @@
 
     <div class="container mt-5">
         <div class="card bg-light p-3 col-sm-6 mx-auto text-center my-4 rounded border">
-            <form action="#" method="post"> 
+            <form action="app/models/crud.php" method="post"> 
                  <h1 style="font-weight: normal;">INICIAR SESIÓN</h1>
                 <br>
                 <br>
@@ -36,7 +38,7 @@
                     <input type="password" class="form-control" id="contra" name="contra"  placeholder="Ingrese su contraseña..." required>
                 </div>
 
-                <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+                <button type="submit" class="btn btn-primary" name="iniciosesion">Iniciar Sesión</button>
                 <p class="mt-3">¿Aún no te has registrado? <a href="registro.html">Regístrate</a>.</p>
             </form>
         </div>
