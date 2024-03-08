@@ -1,9 +1,11 @@
+
+
 <html >
     <meta charset="UTF-8">
 <head>
     <title>JAGUARES DRIVE</title>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css">
-    <link rel="icon" href="img/logo- jaguares drive.png" type="image/png" sizes="512x512">
+    <link rel="icon" href="public/images/logo- jaguares drive.png" type="image/png" sizes="512x512">
 
     <style> 
         body { background: linear-gradient(to bottom, #976fd8, #DBC9F5); margin: 0; height: 100vh; display: flex; justify-content: center; align-items: center; }
@@ -13,7 +15,7 @@
 
     <div class="container mt-5">
         <div class="card bg-light p-3 col-sm-6 mx-auto text-center my-4 rounded border">
-            <form action="#" method="post"> 
+            <form action="app/models/crud.php" method="post"> 
                  <h1 style="font-weight: normal;">INICIAR SESIÓN</h1>
                 <br>
                 <br>
@@ -36,8 +38,13 @@
                     <input type="password" class="form-control" id="contra" name="contra"  placeholder="Ingrese su contraseña..." required>
                 </div>
 
+<<<<<<< HEAD:index.html
                 <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
                 <p class="mt-3">¿Aún no te has registrado? <a href="registro_pasajero.html">Regístrate</a>.</p>
+=======
+                <button type="submit" class="btn btn-primary" name="iniciosesion">Iniciar Sesión</button>
+                <p class="mt-3">¿Aún no te has registrado? <a href="registro.html">Regístrate</a>.</p>
+>>>>>>> develop:index.php
             </form>
         </div>
     </div>
@@ -52,4 +59,7 @@
         <p>&copy; 2018 Jaguares de Chiapas</p>
     </footer> -->
 </html>
+<<<<<<< HEAD:index.html
 
+=======
+>>>>>>> develop:index.php
