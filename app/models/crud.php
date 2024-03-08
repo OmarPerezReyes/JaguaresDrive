@@ -17,6 +17,3 @@ if (isset($_POST['iniciosesion'])) {
         echo "Usuario o contraseña incorrectos.";
     }
 }
-
-
-?>
