@@ -17,3 +17,22 @@ if (isset($_POST['iniciosesion'])) {
         echo "Usuario o contraseña incorrectos.";
     }
 }
+
+if(isset($_POST["registro"])) {
+	$matricula = $_POST["matricula"];
+	$nombre = $_POST["nombre"];
+	$apellidoPat = $_POST["apellido_p"];
+	$apellidoMat = $_POST["apellido_m"];
+	$fechaNacimiento = $_POST["fecha_nac"];
+	$email = $_POST["correo"];
+	$contra = $_POST["contra"];
+	$carrera = $_POST["carrera"];
+	$telefono = $_POST["telefono"];
+	
+	$sql_registro = "INSERT INTO usuario( nombre, apellido_p, apellido_m, fecha_nac, correo, contrasena, carrera, telefono, matricula )
+						VALUES ('$nombre', '$apellidoPat', '$apellidoMat', STR_TO_DATE('$fechaNacimiento', '%Y-%m-%d'), '$email', '$contra', '$carrera', '$telefono', '$matricula');";
+    
+    $result = $conn->query($sql_registro);
+
+    header("Location: ../../index.php");
+}

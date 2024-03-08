@@ -39,7 +39,7 @@
                 </div>
 
                 <button type="submit" class="btn btn-primary" name="iniciosesion">Iniciar Sesión</button>
-                <p class="mt-3">¿Aún no te has registrado? <a href="registro.html">Regístrate</a>.</p>
+                <p class="mt-3">¿Aún no te has registrado? <a href="registro.php">Regístrate</a>.</p>
             </form>
         </div>
     </div>
