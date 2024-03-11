@@ -37,6 +37,7 @@ if(isset($_POST["registro"])) {
     header("Location: ../../index.php");
 }
 
+
 if(isset($_POST['registro_conductor'])) {
     $nombre = $_POST['nom'];
     $apellido_materno = $_POST['apem'];
@@ -83,6 +84,40 @@ if(isset($_POST['registro_conductor'])) {
             } else {
                 echo '<h1>Conductor agregado correctamente</h1>';
             }
+        }
+    }
+}
+
+if(isset($_POST['registro_pasajero'])) {
+    $nombre = $_POST['nom'];
+    $apellido_materno = $_POST['apem'];
+    $apellido_paterno = $_POST['apep'];
+    $fecha_nacimiento = $_POST['fechan'];
+    $email = $_POST['email'];
+    $contrasena = $_POST['contra'];
+    $telefono = $_POST['tel'];
+    $matricula = $_POST['mat'];
+
+    // Inserción de usuario
+    $sql = "INSERT INTO usuario (matricula, nombre, apellido_p, apellido_m, fecha_nac, correo, contrasena, telefono) 
+                VALUES ('$matricula', '$nombre', '$apellido_paterno', '$apellido_materno', '$fecha_nacimiento', '$email', '$contrasena', '$telefono')";
+    $result = $conn->query($sql);
+
+    if(!$result) {
+        echo 'Usuario no registrado';
+    } else {
+        // Suponiendo que solamente hay un usuario con dicha matrícula
+        $id_usuario =  $conn->insert_id; // Obtiene el ID de la última inserción
+
+        // Inserción de Conductor
+        $sql_pasajero = "INSERT INTO pasajero (usuario_id)
+                            VALUES ('$id_usuario')";
+        $result_pasajero = $conn->query($sql_pasajero);
+
+        if(!$result_pasajero) {
+            echo 'Pasajero no registrado';
+        } else {
+            echo '<h1>Pasajero agregado correctamente</h1>';
         }
     }
 }
