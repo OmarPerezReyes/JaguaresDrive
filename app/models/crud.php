@@ -36,3 +36,53 @@ if(isset($_POST["registro"])) {
 
     header("Location: ../../index.php");
 }
+
+if(isset($_POST['registro_conductor'])) {
+    $nombre = $_POST['nom'];
+    $apellido_materno = $_POST['apem'];
+    $apellido_paterno = $_POST['apep'];
+    $fecha_nacimiento = $_POST['fechan'];
+    $email = $_POST['email'];
+    $contrasena = $_POST['contra'];
+    $telefono = $_POST['tel'];
+    $matricula = $_POST['matricula'];
+
+    // Vehiculo
+    $placas = $_POST['placas'];
+    $modelo = $_POST['mode'];
+    $color = $_POST['col'];
+    $marca = $_POST['marca'];
+
+    // Inserción de usuario
+    $sql = "INSERT INTO usuario (matricula, nombre, apellido_p, apellido_m, fecha_nac, correo, contrasena, telefono) 
+                VALUES ('$matricula', '$nombre', '$apellido_paterno', '$apellido_materno', '$fecha_nacimiento', '$email', '$contrasena', '$telefono')";
+    $result = $conn->query($sql);
+
+    if(!$result) {
+        echo 'Usuario no registrado';
+    } else {
+        // Suponiendo que solamente hay un usuario con dicha matrícula
+        $id_usuario =  $conn->insert_id; // Obtiene el ID de la última inserción
+
+        // Inserción de Vehiculo
+        $sql_vehiculo = "INSERT INTO vehiculo (Placas, Color, Marca, Modelo)
+                            VALUES ('$placas', '$color', '$marca', '$modelo')";
+        $result_vehiculo = $conn->query($sql_vehiculo);
+
+        if(!$result_vehiculo) {
+            echo 'Vehiculo no registrado';
+        } else {
+            $id_vehiculo = $conn->insert_id;
+            // Inserción de Conductor
+            $sql_conductor = "INSERT INTO conductor (usuario_id, ID_vehiculo, Estado_disponibilidad)
+                                VALUES ('$id_usuario', '$id_vehiculo', '1')";
+            $result_conductor = $conn->query($sql_conductor);
+
+            if(!$result_conductor) {
+                echo 'Conductor no registrado';
+            } else {
+                echo '<h1>Conductor agregado correctamente</h1>';
+            }
+        }
+    }
+}
