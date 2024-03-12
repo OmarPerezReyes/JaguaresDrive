@@ -15,6 +15,7 @@ if (isset($_POST['iniciosesion'])) {
             session_start();
             $_SESSION['username'] = $row['correo'];
             $_SESSION['password'] = $row['contrasena'];
+	    $_SESSION['user_id'] = $row['usuario_id'];
             header("Location: ../views/pasajero.php");
         }
     } else {
