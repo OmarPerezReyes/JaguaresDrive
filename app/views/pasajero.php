@@ -1,3 +1,38 @@
+<?php
+
+session_start();
+// Conexión a la base de datos
+require_once '../bd/conexion.php';
+
+// Si el usuario no ha iniciado sesión, redirigirlo al inicio de sesión
+if (!isset($_SESSION['username'])) {
+    header("Location: ../../index.php");
+} else {
+    $username = $_SESSION['username'];
+    $contra = $_SESSION['password'];
+    $sql = "SELECT * FROM usuario WHERE correo = '$username' AND contrasena = '$contra'";
+    $result = $conn->query($sql);
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $matricula = $row['matricula'];
+            $nombre = $row['nombre'];
+            $apellido_p = $row['apellido_p'];
+            $apellido_m = $row['apellido_m'];
+            $fecha_nac = $row['fecha_nac'];
+            $correo = $row['correo'];
+            $carrera = $row['carrera'];
+            $telefono = $row['telefono'];
+        }
+    }
+}
+
+
+
+
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -87,21 +122,21 @@
 
     <div id="sidebar">
         <img src="../../public/images/icono-usuario.png" alt="Avatar" class="avatar-img mb-3" style="width: 100px; display: block; margin: 0 auto;">
-        <label for="matricula" style="display: block; text-align: center;" class="white-text"><b>2130155</b></label>
+        <label for="matricula" style="display: block; text-align: center;" class="white-text"><b><?php echo $matricula; ?></b></label>
         <a href="#" class="menu-item">Viajes</a>
         <a href="#" class="menu-item">Perfil</a>
-        <a href="cerrar_sesion.html" class="menu-item">Cerrar Sesión</a>
+        <a href="cerrar_sesion.php" class="menu-item">Cerrar Sesión</a>
     </div>
 
     <div id="content">
         <div class="container-content ">
             <!-- Contenido de la página -->
-            <h1>Bienvenido a nombre</h1>
+            <h1>Bienvenido a <?php echo $nombre." ".$apellido_p." ".$apellido_m; ?></h1>
             <div class="form-group">     
                 <label for="viaje"><b>Viajes disponibles:</b></label>
             </div>
             <div class="inner-container d-flex flex-column" style="position: relative;" id="contenedorDaniel">
-                <label for="name_usuario">Daniel Armando Ledezma Donjuan</label>
+                <label for="name_usuario"><?php echo $nombre." ".$apellido_p." ".$apellido_m; ?></label>
                 <div id="map" class="map"></div>
                 <button onclick="mostrarSweetAlertt()" id="info-container1" style="width: 5cm; background-color: purple; color: white;" class="btn btn-sm mt-2">Ver Información</button>
                 <button onclick="iniciarviaje()" style="width: 5cm; background-color: purple; color: white;" id="viaje" class="btn btn-sm mt-2">Iniciar viaje</button>

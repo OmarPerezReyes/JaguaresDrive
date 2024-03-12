@@ -11,7 +11,11 @@ if (isset($_POST['iniciosesion'])) {
 
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
-            header("Location: ../views/index.php");
+            
+            session_start();
+            $_SESSION['username'] = $row['correo'];
+            $_SESSION['password'] = $row['contrasena'];
+            header("Location: ../views/pasajero.php");
         }
     } else {
         echo "Usuario o contraseña incorrectos.";
