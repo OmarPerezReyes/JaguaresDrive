@@ -10,6 +10,7 @@ if (!isset($_SESSION['username'])) {
 } else {
     $username = $_SESSION['username'];
     $contra = $_SESSION['password'];
+    $user_id = $_SESSION['user_id'];
     $sql = "SELECT * FROM usuario WHERE correo = '$username' AND contrasena = '$contra'";
     $result = $conn->query($sql);
     if ($result->num_rows > 0) {
@@ -24,11 +25,22 @@ if (!isset($_SESSION['username'])) {
             $telefono = $row['telefono'];
         }
     }
+$sqld = "SELECT c.usuario_id id_usuario, c.id_conductor conductor_id, u.usuario_id id
+  	FROM conductor c
+  	INNER JOIN usuario u ON c.usuario_id = u.usuario_id
+  	WHERE c.usuario_id = $user_id";
+	$resultd = $conn->query($sqld);    
+	$row_conductor = $resultd->fetch_assoc();
+	$conductor_id = $row_conductor['conductor_id'];
+
+$sqlt = "SELECT c.id_conductor id, r.id_conductor conductor_id, r.ruta ruta, r.origen origen, r.destino destino, r.distancia distancia, r.estado estado
+  	FROM ruta r
+  	INNER JOIN conductor c ON c.id_conductor = r.id_conductor
+  	WHERE c.id_conductor = $conductor_id";
+$resultt = $conn->query($sqlt);    
+$row_ruta = $resultt->fetch_assoc();
+    
 }
-
-
-
-
 ?>
 
 
