@@ -11,7 +11,7 @@ if (isset($_POST['iniciosesion'])) {
 
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
-            header("Location: ../views/index.php");
+            header("Location: ../views/index.php?usuario_id=" . $row['id_usuario']");
         }
     } else {
         echo "Usuario o contraseña incorrectos.";
