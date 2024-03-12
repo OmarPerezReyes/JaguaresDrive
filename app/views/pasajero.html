@@ -81,7 +81,7 @@
 <body>
 
     <div id="sidebar">
-        <img src="\jaguares\public\images\user.png" alt="Avatar" class="avatar-img mb-3" style="width: 100px; display: block; margin: 0 auto;">
+        <img src="\JaguaresDrive\public\images\icono-usuario.png" alt="Avatar" class="avatar-img mb-3" style="width: 100px; display: block; margin: 0 auto;">
         <label for="matricula" style="display: block; text-align: center;" class="white-text"><b>2130155</b></label>
         <a href="#" class="menu-item">Viajes</a>
         <a href="#" class="menu-item">Perfil</a>
@@ -89,18 +89,20 @@
     </div>
 
     <div id="content">
-        <div class="container-content">
+        <div class="container-content ">
             <!-- Contenido de la página -->
             <h1>Bienvenido a JAGUARES DRIVE</h1>
             <div class="form-group">     
-                <div class="form-group">
-                    <input type="text" class="form-control" id="partida" name="partida" placeholder="Ingrese punto de partida..." required>
-                </div>
                 <label for="viaje"><b>Viajes disponibles:</b></label>
             </div>
-            <div class="inner-container" style="position: relative;">
+            <div class="inner-container d-flex flex-column" style="position: relative;">
                 <!--<img src="\jaguares\public\images\user.png" alt="Avatar" class="avatar-img mb-3" style="width: 50px; position: absolute; top: 0; left: 0;" >-->
                 <label for="name_usuario">Daniel Armando Ledezma Donjuan</label>
+
+                <button onclick="mostrarSweetAlertt()" id="info-container1" style="width: 5cm; background-color: purple; color: white;" class="btn btn-sm mt-2">Ver Información</button>
+                <button onclick="iniciarviaje()" style="width: 5cm; background-color: purple; color: white;" id="viaje" class="btn btn-sm mt-2">Iniciar viaje</button>
+                <br>
+                <label for="hora">Hora de Salida: 6:10 am</label>
                 <!-- Otro contenido que desees agregar -->
             </div>
             
@@ -108,7 +110,7 @@
             <div class="otro-contenedor d-flex flex-column">
                 <label for="name_usuario">Adrián Aejandro Ruíz Márquez</label>
                 <button onclick="mostrarSweetAlert()" id="info-container" style="width: 5cm; background-color: purple; color: white;" class="btn btn-sm mt-2">Ver Información</button>
-                <button style="width: 5cm; background-color: purple; color: white;" id="viaje" class="btn btn-sm mt-2">Iniciar viaje</button>
+                <button onclick="iniciarviaje()" style="width: 5cm; background-color: purple; color: white;" id="viaje" class="btn btn-sm mt-2">Iniciar viaje</button>
                 <br>
                 <label for="hora">Hora de Salida: 6:10 am</label>
             </div>
@@ -124,6 +126,27 @@
                 title: 'Información del Pasajero',
                 html: labelContent,
                 text: "Estudiante de la Universidad Politécnica de Victoria",
+                confirmButtonText: 'Cerrar'
+            });
+        }
+
+        function mostrarSweetAlertt() {
+            var labelContent = document.querySelector('.inner-container label').innerHTML;
+    
+            Swal.fire({
+                title: 'Información del Pasajero',
+                html: labelContent,
+                text: "Estudiante de la Universidad Politécnica de Victoria",
+                confirmButtonText: 'Cerrar'
+            });
+        }
+
+        function iniciarviaje() {
+            var labelContent = document.querySelector('.otro-contenedor label').innerHTML;
+    
+            Swal.fire({
+                title: 'Iniciando Viaje',       
+                //text: "Bonito día",
                 confirmButtonText: 'Cerrar'
             });
         }
