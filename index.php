@@ -7,13 +7,15 @@
 
     <style> 
         body { background: linear-gradient(to bottom, #976fd8, #DBC9F5); margin: 0; height: 100vh; display: flex; justify-content: center; align-items: center; }
-       </style> 
+    </style>
+    
+    <script type="text/javascript" src="registro.js"></script>
 </head>
 <body>
 
     <div class="container mt-5">
         <div class="card bg-light p-3 col-sm-6 mx-auto text-center my-4 rounded border">
-            <form action="app/models/crud.php" method="post"> 
+            <form action="app/models/crud.php" method="post" onsubmit="return validate();"> 
                  <h1 style="font-weight: normal;">INICIAR SESIÓN</h1>
                 <br>
                 <br>

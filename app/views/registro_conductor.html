@@ -12,24 +12,27 @@
             display: flex; 
             justify-content: center;
             align-items: center; }
-       </style> 
+    </style>
+
+    <script type="text/javascript" src="registro.js"></script>
+
 </head>
 <body>
 
     <div class="container mt-5">
         <div class="card bg-light p-3 col-sm-6 mx-auto text-center my-4 rounded border">
-            <form action="../models/crud.php" method="post">
+            <form action="../models/crud.php" method="post"  onsubmit="return validate();">
                  <h1 style="font-weight: normal;">Crear Cuenta</h1>
                 <br>
-            
-                <div class="form-group">
-                    <label for="nom">Nombre:</label>
-                    <input type="text" class="form-control" id="nom" name="nom" placeholder="Ingrese su nombre..." required>
-                </div>
 
                 <div class="form-group">
                     <label for="matricula">Matrícula:</label>
                     <input type="text" class="form-control" id="matricula" name="matricula" placeholder="Ingrese su matrícula..." required>
+                </div>
+            
+                <div class="form-group">
+                    <label for="nom">Nombre:</label>
+                    <input type="text" class="form-control" id="nom" name="nom" placeholder="Ingrese su nombre..." required>
                 </div>
 
                 <div class="form-group">
@@ -68,6 +71,11 @@
                 </div>
 
                 <div class="form-group">
+                    <label for="marca">Marca de Auto:</label>
+                    <input type="text" class="form-control" id="marca" name="marca" placeholder="Ingrese marca del auto..." required>
+                </div>
+
+                <div class="form-group">
                     <label for="mode">Modelo de Auto:</label>
                     <input type="text" class="form-control" id="mode" name="mode" placeholder="Ingrese modelo de placas..." required>
                 </div>
@@ -75,11 +83,6 @@
                 <div class="form-group">
                     <label for="col">Color de Auto:</label>
                     <input type="text" class="form-control" id="col" name="col" placeholder="Ingrese color del auto..." required>
-                </div>
-
-                <div class="form-group">
-                    <label for="marca">Marca de Auto:</label>
-                    <input type="text" class="form-control" id="marca" name="marca" placeholder="Ingrese marca del auto..." required>
                 </div>
                 <button type="submit" class="btn btn-primary" name="registro_conductor">Registrar</button>
             </form>
