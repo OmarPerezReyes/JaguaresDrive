@@ -5,19 +5,76 @@ include '../bd/conexion.php';
 if (isset($_POST['iniciosesion'])) {
     $username = $_POST["username"];
     $contra = $_POST["contra"];
+    $rol = $_POST['rol'];
 
     $sql = "SELECT * FROM usuario WHERE correo = '$username' AND contrasena = '$contra'";
     $result = $conn->query($sql);
 
-    if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-            
-            session_start();
-            $_SESSION['username'] = $row['correo'];
-            $_SESSION['password'] = $row['contrasena'];
-	    $_SESSION['user_id'] = $row['usuario_id'];
-            header("Location: ../views/pasajero.php");
+    // Solo puede existir un usuario (evitar duplicados)
+    if($result->num_rows == 1) {
+        $row = $result->fetch_assoc();
+
+        // Iniciar sesión como conductor
+        if($rol == '1') {
+            $sql_conductor = "SELECT * FROM conductor WHERE usuario_id = " . $row['usuario_id'];
+            $result_conductor = $conn->query($sql_conductor);
+            echo $sql_conductor;
+
+            // Solo puede existir un registro del conductor (evitar duplicados)
+            if ($result_conductor->num_rows == 1) {
+                $data_conductor = $result_conductor->fetch_assoc();
+
+                session_start();
+
+                $_SESSION['username'] = $row['correo'];
+
+                $_SESSION['username'] = $row['correo'];
+                $_SESSION['password'] = $row['contrasena'];
+                $_SESSION['user_id'] = $row['usuario_id'];
+
+                // Envío de todos los datos de ambas consultas
+                $_SESSION['sesion'] = array(
+                    'usuario' => $row,
+                    'conductor' => $data_conductor
+                );
+
+                header("Location: ../views/conductor.php");
+            } else if($result_conductor->num_rows > 0) {
+                echo '<h1>Hay '.$result_conductor->num_rows.' conductores con los mismos datos</h1>';
+            } else {
+                echo '<h1>Conductor no registrado</h1>';
+            }
+
+        // Iniciar sesión como pasajero
+        } else if ($rol == '2') {
+            $sql_pasajero = "SELECT * FROM pasajero WHERE usuario_id = ".$row['usuario_id'];
+            $result_pasajero = $conn->query($sql_pasajero);
+
+            if($result_pasajero->num_rows == 1) {
+                $data_pasajero = $result_pasajero->fetch_assoc();
+
+                session_start();
+
+                $_SESSION['username'] = $row['correo'];
+                $_SESSION['password'] = $row['contrasena'];
+                $_SESSION['user_id'] = $row['usuario_id'];
+
+                header("Location: ../views/pasajero.php");
+            } else if($result_pasajero->num_rows > 0) {
+                echo '<h1>Hay '.$result_pasajero->num_rows.' pasajeros con los mismos datos</h1>';
+            } else {
+                echo '<h1>Pasajero no registrado</h1>';
+            }
+
+
+        // Este error no deberia ocurrir, pero por si acaso
+        } else {
+            echo 'Error en el rol de usuario';
         }
+
+    // Uno o más usuarios registrados con el mismo correo y contraseña (no debe de pasar)
+    } else if ($result->num_rows > 0) {
+        echo '<h1>Hay '.$result->num_rows.' usuarios con los mismos datos</h1>';
     } else {
         echo "Usuario o contraseña incorrectos.";
     }

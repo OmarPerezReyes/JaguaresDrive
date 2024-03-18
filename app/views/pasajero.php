@@ -31,13 +31,14 @@ $sqld = "SELECT c.usuario_id id_usuario, c.id_conductor conductor_id, u.usuario_
   	WHERE c.usuario_id = $user_id";
 	$resultd = $conn->query($sqld);    
 	$row_conductor = $resultd->fetch_assoc();
-	$conductor_id = $row_conductor['conductor_id'];
+	if($resultd->num_rows > 0) $conductor_id = $row_conductor['id_conductor']; // CAMBIAR VALIDACIONES
+    else $conductor_id = 0;     // CAMBIAR VALIDACIONES
 
 $sqlt = "SELECT c.id_conductor id, r.id_conductor conductor_id, r.ruta ruta, r.origen origen, r.destino destino, r.distancia distancia, r.estado estado
   	FROM ruta r
   	INNER JOIN conductor c ON c.id_conductor = r.id_conductor
-  	WHERE c.id_conductor = $conductor_id";
-$resultt = $conn->query($sqlt);    
+  	WHERE c.id_conductor = '$conductor_id'";
+$resultt = $conn->query($sqlt);
 $row_ruta = $resultt->fetch_assoc();
     
 }
@@ -147,7 +148,7 @@ $row_ruta = $resultt->fetch_assoc();
             <div class="form-group">     
                 <label for="viaje"><b>Viajes disponibles:</b></label>
             </div>
-            <div class="inner-container d-flex flex-column" style="position: relative;" id="contenedorDaniel">
+            <div class="inner-container d-flex flex-column" style=" position: relative;" id="contenedorDaniel">
                 <label for="name_usuario"><?php echo $nombre." ".$apellido_p." ".$apellido_m; ?></label>
                 <div id="map" class="map"></div>
                 <button onclick="mostrarSweetAlertt()" id="info-container1" style="width: 5cm; background-color: purple; color: white;" class="btn btn-sm mt-2">Ver Información</button>

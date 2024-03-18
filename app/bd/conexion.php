@@ -2,8 +2,8 @@
 
 // Conexión a la base de datos
 $server_name = "localhost";
-$user_name = "admin";
-$password = "f97b293f28e7e668c3e0ecd6a002129332e809902add42cf";
+$user_name = "root";
+$password = "";
 $dbname = "DIDI_UPV";
 
 // Crear conexión

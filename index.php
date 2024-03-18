@@ -23,8 +23,8 @@
                 <div class="form-group">     
                     <select class="form-control" id="rol" name="rol" required>
                         <option value="" disabled selected >Seleccione un rol de usuario...</option>
-                        <option value="es">Conductor</option>
-                        <option value="mx">Pasajero</option>
+                        <option value="1">Conductor</option>
+                        <option value="2">Pasajero</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -47,9 +47,9 @@
         document.getElementById('rol').addEventListener('change', function() {
             var selectedRol = this.value;
             var registroLink = document.getElementById('registroLink');
-            if (selectedRol === 'es') {
+            if (selectedRol === '1') {
                 registroLink.innerHTML = '¿Aún no te has registrado? <a href="app/views/registro_conductor.html">Regístrate</a>.';
-            } else if (selectedRol === 'mx') {
+            } else if (selectedRol === '2') {
                 registroLink.innerHTML = '¿Aún no te has registrado? <a href="app/views/registro_pasajero.html">Regístrate</a>.';
             } else {
                 registroLink.innerHTML = '¿Aún no te has registrado? <a href="#">Regístrate</a>.';
