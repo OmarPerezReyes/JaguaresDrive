@@ -81,6 +81,8 @@
             margin-bottom: 20px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             max-width: 300px;
+            flex-grow: 0; /* Evita el crecimiento automático de las solicitudes */
+            height: 300px; /* Deja que la altura sea automática */
         }
 
         .solicitud-content {
@@ -116,10 +118,21 @@
             gap: 20px; /* Espacio entre los elementos */
         }
 
+       
         .solicitudes-wrapper {
-            flex-wrap: wrap; /* Permite que las solicitudes se muevan a la siguiente fila */
-            gap: 20px; /* Espacio entre las solicitudes */
+            display: flex;
+            flex-direction: row; /* Cambia 'row-reverse' por 'row' para que los elementos se agreguen de izquierda a derecha */
+            gap: 20px; /* Espacio entre los elementos */
+            flex-wrap: wrap; /* Permite que las solicitudes se muevan a la siguiente fila si es necesario */
         }
+        #content {
+            /*width: 80%; *//* Establece un ancho más grande para el contenedor, ajusta según sea necesario */
+            margin-left: auto; /* Centra el contenedor horizontalmente */
+            margin-right: auto; /* Centra el contenedor horizontalmente */
+        }
+
+
+
 
     </style>
 </head>
@@ -178,6 +191,9 @@
                         </div>
                     </div>
                 </div>
+
+             
+
             </div>
         </div>
     </div>
