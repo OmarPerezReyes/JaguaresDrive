@@ -104,7 +104,14 @@ if ($result->num_rows > 0) {
         #main-container {
             display: flex; /* Configura el diseño de la fila para contener el sidebar a la izquierda y el contenido a la derecha */
         }
-        
+
+        #map-container {
+            height: 500px;
+            width: 100%;
+            overflow: hidden; /* Evita que el mapa genere barras de desplazamiento */
+        }
+
+
     </style>
 </head>
 
@@ -155,25 +162,91 @@ if ($result->num_rows > 0) {
                     </div>
                 </div>
             </div>
+            <label for="paradas"><b>Selecciona puntos de paradas:</b></label>
+            <div id="paradas-container">
+                <div class="form-group">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text"><i class="fa-solid fa-location-pin"></i></span>
+                        <input type="text" class="form-control" placeholder="Buscar paradas" aria-label="Buscar paradas" aria-describedby="button-buscar-paradas">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary btn-accion" type="button" id="button-agregar-parada" onclick="agregarPuntoParada()"><i class="fa-solid fa-plus"></i></button>
+                            <button class="btn btn-outline-secondary btn-accion" type="button" id="button-eliminar-parada" onclick="eliminarPuntoParada()"><i class="fa-solid fa-minus"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="map-container">
+                <iframe src="../views/mapa.html" width="100%" height="500px" frameborder="0"></iframe>
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="costo" style="margin-right: 510px;"><b>Costo:</b></label>
+                <label for="hora" style="margin-right: 510px;"><b>Hora de salida:</b></label>
+                <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input type="number" class="form-control" id="costo" placeholder="Ingrese el costo" aria-label="Ingrese el costo" aria-describedby="button-calcular">
+                    <span class="input-group-text"><i class="fa-solid fa-clock"></i></span>
+                    <input type="time" class="form-control" id="hora" aria-label="Ingrese la hora" aria-describedby="button-calcular">
+                </div>
+            </div>
+            
+            
+            
+            <div class="form-group">
+                <label for="descripcion"><b>Descripción:</b></label>
+                <textarea class="form-control" id="descripcion" rows="3" placeholder="Ingrese la descripción"></textarea>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="confirmarInicioViaje(event)" style="background-color: rgb(0, 0, 0); color: white;">Subir Viaje</button>
         </div>
     </div>
 
     <script>
-        function mostrarSweetAlertt(nombre) {
+        function agregarPuntoParada() {
+            var paradaContainer = document.getElementById('paradas-container');
+            var newFormGroup = document.createElement('div');
+            newFormGroup.classList.add('form-group');
+            newFormGroup.innerHTML = `
+                <div class="input-group mb-3">
+                    <!-- Icono -->
+                    <span class="input-group-text"><i class="fa-solid fa-location-pin"></i></span>
+                    <input type="text" class="form-control" placeholder="Buscar paradas" aria-label="Buscar paradas" aria-describedby="button-buscar-paradas">
+                    <!-- Botones de acciones -->
+                    <div class="input-group-append">
+                        <!-- Botón de agregar -->
+                        <button class="btn btn-outline-secondary btn-accion" type="button" onclick="agregarPuntoParada()"><i class="fa-solid fa-plus"></i></button>
+                        <!-- Botón de eliminar -->
+                        <button class="btn btn-outline-secondary btn-accion" type="button" onclick="eliminarPuntoParada()"><i class="fa-solid fa-minus"></i></button>
+                    </div>
+                </div>`;
+            paradaContainer.appendChild(newFormGroup);
+        }
+
+        function eliminarPuntoParada() {
+            var paradaContainer = document.getElementById('paradas-container');
+            var formGroups = paradaContainer.getElementsByClassName('form-group');
+            if (formGroups.length > 1) { // Asegúrate de que haya al menos un elemento antes de eliminar
+                paradaContainer.removeChild(formGroups[formGroups.length - 1]); // Elimina el último elemento de la lista
+            }
+        }
+
+        function confirmarInicioViaje(event) {
+            event.preventDefault(); // Evita el comportamiento predeterminado del evento
+
             Swal.fire({
-                title: "Información del Conductor",
-                text: "Nombre: " + nombre,
-                showClass: {
-                    popup: `
-                        animate__animated animate__fadeInUp animate__faster
-                    `
-                },
-                hideClass: {
-                    popup: `
-                        animate__animated animate__fadeOutDown animate__faster
-                    `
-                },
+                title: "¿Estás seguro de subir este viaje?",
+                icon: "NOTA: Todo los alumnos podran verlo y solicitarlo.",
+                showCancelButton: true,
+                confirmButtonColor: "purple",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "¡Sí!",
                 scrollbarPadding: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: "Viaje confirmado!",
+                        icon: "success"
+                    });
+                }
             });
         }
 
