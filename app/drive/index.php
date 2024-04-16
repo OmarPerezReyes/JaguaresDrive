@@ -1,3 +1,8 @@
+<?php
+    include_once '../bd/conexion.php';
+    $objConexion = new Conexion();
+$conexion = $objConexion->conectar();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -158,10 +163,8 @@
             <div class="form-information-childs">
                 <h2>Iniciar Sesión</h2>
                 <br>
-
-          
-               
-            <form class="form form-register" method="post"  action="curdlogin.php">
+     
+            <form class="form form-register" method="post"  action="crud/crudlogin.php">
                 <div class="input-group mb-3">
                     <label class="input-group-text" for="user-role">
                         <i class='ant-design:pushpin-filled'></i> Seleccione un rol de usuario...
@@ -181,6 +184,7 @@
                         <i class='bx bx-lock-alt'></i>
                         <input type="password" placeholder="Contraseña" name="pass" id="pass">
                     </label>
+
                 
                 <input type="submit" value="Iniciar Sesión">
             </form>
@@ -212,8 +216,7 @@
         <div class="form-information-childs">
             <h2>Crear Cuenta</h2>
 
-            
-            <form class="form form-register" method="post" action="crud.php">
+            <form class="form form-register" method="post" action="crud/crud.php">
 
                 <div class="input-group mb-3">
                     <label class="input-group-text" for="user-role">
@@ -272,7 +275,29 @@
                         <input type="password" placeholder="Contraseña" name="pass" id="pass">
                     </label>
                 </div>
-                
+                <div class="form-row">
+                <label class="input-container">
+                    <i class='bx bx-lock-alt'></i>
+                    <select name="carrera" id="carrera" required>
+                        <option value="" >Selecciona una carrera</option>
+                        <?php
+                        // Consulta todas las carreras de la base de datos
+                        $query = "SELECT id_carrera, nombre FROM Carreras";
+                        $result = $conexion->query($query);
+                        // Verifica si hay resultados
+                        if ($result->num_rows > 0) {
+                            // Itera sobre los resultados y crea opciones para el select
+                            while ($row = $result->fetch_assoc()) {
+                                echo "<option value='" . $row['id_carrera'] . "'>" . $row['nombre'] . "</option>";
+                            }
+                        } else {
+                            echo "<option value=''>No hay carreras disponibles</option>";
+                        }
+
+                        ?>
+                    </select>
+                </label>
+            </div>
                 <input type="submit" value="Registrarse">
             </form>
         </div>

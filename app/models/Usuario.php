@@ -47,29 +47,129 @@ class UsuarioModel {
         }
     }
 
-    // Método para obtener los datos del usuario por su ID
-    public function obtenerUsuarioPorId($usuarioId) {   
-        $conexion = $this->conexion->conectar();
+        // Método para obtener los datos adicionales de un conductor, incluyendo los detalles del vehículo
+        private function obtenerDatosConductor($usuarioId) {
+            $conexion = $this->conexion->conectar();
 
-        // Preparar la consulta SQL para obtener los datos del usuario por su ID
-        $query = "SELECT * FROM usuario WHERE usuario_id = ?";
-        $statement = $conexion->prepare($query);
-        $statement->bind_param("i", $usuarioId);
-        $statement->execute();
-        $result = $statement->get_result();
+            // Preparar la consulta SQL para obtener los datos del conductor y su vehículo por su ID de usuario
+            $query = "SELECT c.*, v.Placas, v.Color, v.Marca, v.Modelo 
+                    FROM conductor c
+                    LEFT JOIN vehiculo v ON c.ID_vehiculo = v.ID_vehiculo
+                    WHERE c.usuario_id = ?";
+            $statement = $conexion->prepare($query);
+            $statement->bind_param("i", $usuarioId);
+            $statement->execute();
+            $result = $statement->get_result();
 
-        // Verificar si se obtuvieron resultados
-        if ($result->num_rows > 0) {
-            // Obtener los datos del usuario
-            $row = $result->fetch_assoc();
-            // Crear un objeto Usuario con los datos obtenidos de la base de datos
-            $usuario = new Usuario($row['usuario_id'], $row['matricula'], $row['nombre'], $row['apellido_p'], $row['apellido_m'], $row['fecha_nac'], $row['correo'], $row['contrasena'], $row['carrera'], $row['telefono']);
-            return $usuario;
-        } else {
-            // No se encontró ningún usuario con el ID proporcionado
-            return null;
+            // Verificar si se obtuvieron resultados
+            if ($result->num_rows > 0) {
+                // Obtener los datos del conductor y su vehículo
+                $row = $result->fetch_assoc();
+                return $row;
+            } else {
+                // Si no se encontraron datos de conductor, devolver un arreglo vacío
+                return [];
+            }
         }
+
+        public function obtenerUsuarioPorId($usuarioId) {
+            $conexion = $this->conexion->conectar();
+
+            // Preparar la consulta SQL para obtener los datos del usuario por su ID
+            $query = "SELECT * FROM usuario WHERE usuario_id = ?";
+            $statement = $conexion->prepare($query);
+            $statement->bind_param("i", $usuarioId);
+            $statement->execute();
+            $result = $statement->get_result();
+
+            // Verificar si se obtuvieron resultados
+            if ($result->num_rows > 0) {
+                // Obtener los datos del usuario
+                $row = $result->fetch_assoc();
+
+                // Verificar el rol del usuario
+                $rol = $row['rol'];
+
+                switch ($rol) {
+                    case 'conductor':
+                        // Si es conductor, obtener los datos adicionales del conductor
+                        $conductor = $this->obtenerDatosConductor($usuarioId);
+
+                        // Crear un objeto UsuarioConductor con los datos obtenidos
+                        $usuario = new Usuario(
+                            $row['usuario_id'],
+                            $row['matricula'],
+                            $row['nombre'],
+                            $row['apellido_p'],
+                            $row['apellido_m'],
+                            $row['fecha_nac'],
+                            $row['correo'],
+                            $row['contrasena'],
+                            $row['telefono'],
+                            $row['id_carrera'],
+                            $conductor['Num_licencia_conducir'],
+                            $conductor['Estado_disponibilidad'],
+                            $conductor['Modelo'], // Nuevo argumento para el modelo del auto
+                            $conductor['Color'], // Nuevo argumento para el color del auto
+                            $conductor['Marca'] // Nuevo argumento para la marca del auto
+                        );
+
+                        // Asignar los datos adicionales del conductor al objeto Usuario
+                        $usuario->setPlacas($conductor['Placas']);
+                        
+                        return $usuario;
+                        break;
+                    default:
+                        // Si el rol no es reconocido o no es conductor, devolver un objeto Usuario sin datos adicionales de conductor
+                        $usuario = new Usuario(
+                            $row['usuario_id'],
+                            $row['matricula'],
+                            $row['nombre'],
+                            $row['apellido_p'],
+                            $row['apellido_m'],
+                            $row['fecha_nac'],
+                            $row['correo'],
+                            $row['contrasena'],
+                            $row['carrera'],
+                            $row['telefono'],
+                            null,
+                            null,
+                            null
+                        );
+                        return $usuario;
+                }
+            } else {
+                // No se encontró ningún usuario con el ID proporcionado
+                return null;
+            }
+        }
+
+       
+
+
+
+// Método para obtener los datos adicionales de un pasajero
+private function obtenerDatosPasajero($usuarioId) {
+    $conexion = $this->conexion->conectar();
+
+    // Preparar la consulta SQL para obtener los datos del pasajero por su ID de usuario
+    $query = "SELECT * FROM pasajero WHERE usuario_id = ?";
+    $statement = $conexion->prepare($query);
+    $statement->bind_param("i", $usuarioId);
+    $statement->execute();
+    $result = $statement->get_result();
+
+    // Verificar si se obtuvieron resultados
+    if ($result->num_rows > 0) {
+        // Obtener los datos del pasajero
+        $row = $result->fetch_assoc();
+        return $row;
+    } else {
+        // Si no se encontraron datos de pasajero, devolver un arreglo vacío
+        return [];
     }
+}
+
 }
 
 
@@ -91,8 +191,10 @@ class Usuario
     private $modeloAuto;
     private $colorAuto;
     private $marcaAuto;
+    private $licencia;
+    private $estado;
 
-    public function __construct($usuario_id, $matricula, $nombre, $apellido_p, $apellido_m, $fecha_nac, $correo, $contrasena, $carrera, $telefono)
+    public function __construct($usuario_id, $matricula, $nombre, $apellido_p, $apellido_m, $fecha_nac, $correo, $contrasena, $telefono,$carrera,$licencia,$estado, $modeloAuto, $colorAuto, $marcaAuto)
     {
         $this->usuario_id = $usuario_id;
         $this->matricula = $matricula;
@@ -104,6 +206,12 @@ class Usuario
         $this->contrasena = $contrasena;
         $this->carrera = $carrera;
         $this->telefono = $telefono;
+        $this->modeloAuto = $modeloAuto;
+        $this->colorAuto = $colorAuto;
+        $this->marcaAuto = $marcaAuto;
+        $this->licencia = $licencia;
+        $this->estado = $estado;
+        $this->carrera = $carrera;
     }
     
 
@@ -172,8 +280,29 @@ class Usuario
 
     public function getMarcaAuto(){
         return $this->marcaAuto;
+    }   
+     public function getLicencia(){
+        return $this->licencia;
+    }
+    public function getEstado(){
+        return $this->estado; 
+    }   
+
+
+    public function setLicencia($licencia)
+    {
+        $this->licencia = $licencia;
     }
     
+    
+    public function setEstado($estado)
+    {
+        $this->estado = $estado;
+    }
+
+
+
+        
     public function setUsuarioId($usuario_id)
     {
         $this->usuario_id = $usuario_id;
@@ -222,5 +351,25 @@ class Usuario
     public function setTelefono($telefono)
     {
         $this->telefono = $telefono;
+    }
+
+    public function setPlacas($placas)
+    {
+        $this->placas = $placas;
+    }
+
+    public function setModeloAuto($modeloAuto)
+    {
+        $this->modeloAuto = $modeloAuto;
+    }
+
+    public function setColorAuto($colorAuto)
+    {
+        $this->colorAuto = $colorAuto;
+    }
+
+    public function setMarcaAuto($marcaAuto)
+    {
+        $this->marcaAuto = $marcaAuto;
     }
 }

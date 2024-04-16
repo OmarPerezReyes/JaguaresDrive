@@ -1,6 +1,10 @@
 <?php
 // Incluir el archivo de conexión a la base de datos
-include_once '../bd/conexion.php';
+include_once '../../bd/conexion.php';
+
+// Crear una instancia de la clase Conexion
+$objConexion = new Conexion();
+$conexion = $objConexion->conectar();
 
 // Verificar si se han enviado datos mediante el método POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -14,6 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $telefono = $_POST['tele'];
     $matricula = $_POST['mat'];
     $contrasena = $_POST['pass'];
+    $carrera = $_POST['carrera'];
 
     // Verificar si la matrícula ya existe en la tabla de usuarios
     $sql_verificar_matricula = "SELECT * FROM usuario WHERE matricula = '$matricula'";
@@ -27,8 +32,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $rol = ($userRole == 1) ? 'conductor' : 'pasajero';
 
         // Preparar la sentencia SQL para la inserción en la tabla 'usuario'
-        $sql_usuario = "INSERT INTO usuario (matricula, nombre, apellido_p, apellido_m, fecha_nac, correo, contrasena, telefono, rol) 
-                        VALUES ('$matricula', '$nombre', '$apellidoPaterno', '$apellidoMaterno', '$fechaNacimiento', '$correo', '$contrasena', '$telefono', '$rol')";
+        $sql_usuario = "INSERT INTO usuario (matricula, nombre, apellido_p, apellido_m, fecha_nac, correo, contrasena, telefono, rol, id_carrera) 
+                        VALUES ('$matricula', '$nombre', '$apellidoPaterno', '$apellidoMaterno', '$fechaNacimiento', '$correo', '$contrasena', '$telefono', '$rol', '$carrera')";
 
         // Ejecutar la consulta para insertar en la tabla 'usuario'
         if ($conexion->query($sql_usuario) === TRUE) {
@@ -42,7 +47,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 // Ejecutar la consulta para insertar en la tabla 'conductor'
                 if ($conexion->query($sql_conductor) === TRUE) {
-                    echo "<script>alert('Registro insertado correctamente como conductor.');history.back();</script>";
+                    echo "<script>alert('Registro insertado correctamente como conductor.');</script>";
+                    header("Location: ../index.php");
+
                 } else {
                     echo "<script>alert('Error al insertar en la tabla conductor: " . $conexion->error . "');history.back();</script>";
                 }
@@ -53,7 +60,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 // Ejecutar la consulta para insertar en la tabla 'pasajero'
                 if ($conexion->query($sql_pasajero) === TRUE) {
-                    echo "<script>alert('Registro insertado correctamente como pasajero.');history.back();</script>";
+                    echo "<script>alert('Registro insertado correctamente como pasajero.');/script>";
+                    header("Location: ../index.php");
+
                 } else {
                     echo "<script>alert('Error al insertar en la tabla pasajero: " . $conexion->error . "');history.back();</script>";
                 }
@@ -63,6 +72,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    $conexion->close();
 }
 ?>

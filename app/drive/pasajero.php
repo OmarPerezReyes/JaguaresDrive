@@ -1,13 +1,15 @@
 <?php
 
 include_once '../bd/conexion.php'; 
-
+// Crear una instancia de la clase Conexion
+$conexion_bd = new Conexion();
+$conexion = $conexion_bd->conectar();
 session_start();
 
 // Verificar si el usuario ha iniciado sesión y tiene el rol de pasajero
 if (!isset($_SESSION['usuario_id']) || !isset($_SESSION['rol']) || $_SESSION['rol'] !== 'pasajero') {
     // Usuario no autenticado o no tiene el rol de pasajero, redirigir a la página de inicio de sesión
-    header("Location: index.html");
+    header("Location: index.php");
     exit;
 }
 
@@ -26,7 +28,7 @@ if ($result->num_rows > 0) {
 } else {
     // No se encontró el usuario en la base de datos, manejar el error según sea necesario
     // Por ejemplo, redirigir al usuario a la página de inicio de sesión con un mensaje de error
-    header("Location: index.html?error=user_not_found");
+    header("Location: index.php?error=user_not_found");
     exit;
 }
 
@@ -128,7 +130,7 @@ if ($result->num_rows > 0) {
         <nav class="menu">
             <a href="pasajero.html" class="menu-item"><i class="fas fa-location-dot"></i> Viajes disponibles</a>
             <a href="viaje.html" class="menu-item"><i class="fa-solid fa-car"></i> Mi viaje</a>
-            <a href="editar.html" class="menu-item"><i class="fa-solid fa-gear"></i> Perfil</a>
+            <a href="editar.php" class="menu-item"><i class="fa-solid fa-gear"></i> Perfil</a>
             <a href="cerrar_sesion.php" class="menu-item" onclick="confirmarCerrarSesion(event)"><i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión</a>
         </nav>
     </div>
@@ -188,7 +190,7 @@ if ($result->num_rows > 0) {
             }).then((result) => {
                 if (result.isConfirmed) {
                     // Redirige al usuario a la página de inicio de sesión (login.html)
-                    window.location.href = "index.html";
+                    window.location.href = "index.php";
                 }
             });
         }

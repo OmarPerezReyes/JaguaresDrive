@@ -1,3 +1,44 @@
+<?php
+include_once '../bd/conexion.php'; 
+// Crear una instancia de la clase Conexion
+$conexion_bd = new Conexion();
+$conexion = $conexion_bd->conectar();
+
+session_start();
+
+// Verificar si el usuario ha iniciado sesión y tiene el rol de pasajero
+if (!isset($_SESSION['usuario_id']) || !isset($_SESSION['rol']) || $_SESSION['rol'] !== 'pasajero') {
+    // Usuario no autenticado o no tiene el rol de pasajero, redirigir a la página de inicio de sesión
+    header("Location: index.php");
+    exit;
+}
+
+// Obtener el nombre de usuario de las variables de sesión
+$nombreUsuario = "";
+
+// Obtener el nombre de usuario desde la base de datos utilizando el ID de usuario almacenado en la sesión
+$usuarioId = $_SESSION['usuario_id'];
+$sql = "SELECT nombre, apellido_p, apellido_m, fecha_nac, telefono, matricula, correo,contrasena FROM usuario WHERE usuario_id = $usuarioId";
+$result = $conexion->query($sql);
+
+if ($result->num_rows > 0) {
+    $row = $result->fetch_assoc();
+    $nombreUsuario = $row['nombre'];
+    $apellidoPaterno = $row['apellido_p'];
+    $apellidoMaterno = $row['apellido_m'];
+    $fechaNacimiento = $row['fecha_nac'];
+    $telefono = $row['telefono'];
+    $matricula = $row['matricula'];
+    $correo = $row['correo'];
+    $contrasena = $row['contrasena'];
+} else {
+    // No se encontró el usuario en la base de datos, manejar el error según sea necesario
+    // Por ejemplo, redirigir al usuario a la página de inicio de sesión con un mensaje de error
+    header("Location: index.php?error=user_not_found");
+    exit;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -96,11 +137,11 @@
         </div>
 
         <div class="menu">
-            <label for="matricula" style="display: block; text-align: center;" class="white-text"><b>2130155</b></label>
+            <label for="matricula" style="display: block; text-align: center;" class="white-text"><b><?= $matricula ?></b></label>
             <a href="pasajero.html" class="menu-item"><i class="fas fa-location-dot"></i> Viajes disponibles</a>
             <a href="viaje.html" class="menu-item"><i class="fa-solid fa-car"></i> Mi viaje</a>
             <a href="editar.html" class="menu-item"><i class="fa-solid fa-gear"></i> Perfil</a>
-            <a href="index.html" class="menu-item" onclick="confirmarCerrarSesion(event)"><i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión</a>
+            <a href="index.php" class="menu-item" onclick="confirmarCerrarSesion(event)"><i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión</a>
         </div>
     </div>
 
@@ -113,56 +154,60 @@
             <!-- Input oculto para cargar imagen -->
             <input type="file" id="input-imagen" style="display: none;" accept="image/*"> <!-- Icono en la posición izquierda superior -->
             <button id="btn-actualizar" class="btn btn-lg btn-purple float-right">Actualizar</button> <!-- Botón de Actualizar --> <!-- Botón de Actualizar -->
+            <form action="crud/cambiar_rol.php" method="post">
+                <button type="submit" name="rol_pasajero" value="conductor" class="btn btn-lg btn-purple float-right">Cambiar a Conductor</button>
+            </form>
             <div class="avatar-container-large">
                <centering><img id="avatar-img" src="img\icono-usuario.png" alt="Avatar" class="avatar-img-large"></centering>
+
             </div>
 
-            <centering><div class="input-group mb-3">
+       <!--     <centering><div class="input-group mb-3">
                 <label class="input-group-text" for="user-role">
                     <i class='ant-design:pushpin-filled'></i> Seleccione un rol de usuario...
                 </label>
                 <select class="form-select form-select-sm" id="user-role" aria-label="Large select example">
                     <option value="1">Conductor</option>
-                    <option value="2">Pasajero</option>
+                    <option value="2" selected>Pasajero</option>
                 </select>
-            </div></centering>
+            </div></centering>-->
 
 
             <div class="row justify-content-center">
                 <div class="col-md-4">
                     <div class="form-group text-center">
                         <label for="nombre" class="text-center">Nombre:</label>
-                        <input type="text" class="form-control text-center" id="nombre" placeholder="Ingrese su nombre">
+                        <input type="text" class="form-control text-center" id="nombre" value="<?= $nombreUsuario ?>" placeholder="Ingrese su nombre">
                     </div>
                     <div class="form-group text-center">
                         <label for="apellido1" class="text-center">Apellido Paterno:</label>
-                        <input type="text" class="form-control text-center" id="apellido1" placeholder="Ingrese apellido paterno">
+                        <input type="text" class="form-control text-center" id="apellido1" value="<?= $apellidoPaterno ?>" placeholder="Ingrese apellido paterno">
                     </div>
                     <div class="form-group text-center">
                         <label for="apellido2" class="text-center">Apellido Materno:</label>
-                        <input type="text" class="form-control text-center" id="apellido2" placeholder="Ingrese apellido materno">
+                        <input type="text" class="form-control text-center" id="apellido2" value="<?= $apellidoMaterno ?>" placeholder="Ingrese apellido materno">
                     </div>
                     <div class="form-group text-center">
                         <label for="nacimiento" class="text-center">Fecha de Nacimiento:</label>
-                        <input type="date" class="form-control text-center" id="nacimiento">
+                        <input type="date" class="form-control text-center" id="nacimiento" value="<?= $fechaNacimiento ?>">
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group text-center">
                         <label for="telefono" class="text-center">Teléfono:</label>
-                        <input type="tel" class="form-control text-center" id="telefono" placeholder="Ingrese su número de teléfono">
+                        <input type="tel" class="form-control text-center" id="telefono" value="<?= $telefono ?>" placeholder="Ingrese su número de teléfono">
                     </div>
                     <div class="form-group text-center">
                         <label for="matricula" class="text-center">Matrícula:</label>
-                        <input type="text" class="form-control text-center" id="matricula" placeholder="Ingrese su matrícula">
+                        <input type="text" class="form-control text-center" id="matricula" value="<?= $matricula ?>" placeholder="Ingrese su matrícula" readonly>
                     </div>
                     <div class="form-group text-center">
                         <label for="correo" class="text-center">Correo Electrónico:</label>
-                        <input type="email" class="form-control text-center" id="correo" placeholder="Ingrese su correo electrónico">
+                        <input type="email" class="form-control text-center" id="correo" value="<?= $correo ?>" placeholder="Ingrese su correo electrónico">
                     </div>
                     <div class="form-group text-center">
                         <label for="contrasena" class="text-center">Contraseña:</label>
-                        <input type="password" class="form-control text-center" id="contrasena" placeholder="Ingrese su contraseña">
+                        <input type="password" class="form-control text-center" id="contrasena" value="<?= $contrasena ?>" placeholder="Ingrese su contraseña">
                     </div>
                 </div>
             </div>
@@ -186,7 +231,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     // Redirige al usuario a la página de inicio de sesión (login.html)
-                    window.location.href = "index.html";
+                    window.location.href = "index.php";
                 }
             });
         }
@@ -237,7 +282,4 @@
     
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-Xe8FIISpaF1FODdP7IjFmzHeGeFZhUByu2DdTm6l5on5Cv5uUZcXnKjpBy6QhpF4" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+WyIx8vHV5z5q1gF94tLl5MDO/aDlO7f5J" crossorigin="anonymous"></script>
-
-</body>
-</html>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js

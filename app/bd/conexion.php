@@ -1,7 +1,7 @@
 <?php
 // Conexión a la base de datos
 class Conexion{
-private $server_name = "127.0.0.1:3306";
+private $server_name = "localhost";
 private $user_name = "root";
 private $password = "";
 private $dbname = "didi_upv";
@@ -13,7 +13,6 @@ public function conectar() {
     if ($conexion->connect_error) {
         die("Error de conexión: " . $conexion->connect_error);
     }else{
-        echo "si";
 }
     return $conexion;
 }

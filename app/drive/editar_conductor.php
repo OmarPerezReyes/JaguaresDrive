@@ -1,7 +1,13 @@
 <?php
+
+session_start();
+$usuarioId = $_SESSION['usuario_id'];
+
 // Incluir el archivo de conexión a la base de datos u otras clases necesarias
 require_once '../bd/conexion.php';
 require_once '../models/Usuario.php'; // Asegúrate de especificar la ruta correcta
+$conexion_bd = new Conexion();
+$conexion = $conexion_bd->conectar();
 
 // Aquí debes incluir el código para obtener los datos del usuario, puedes usar la misma lógica que en conductor.php
 $usuarioId = $_GET['id_usuario'];
@@ -22,11 +28,12 @@ $placasAuto = $usuario->getPlacas();
 $modeloAuto = $usuario->getModeloAuto();
 $colorAuto = $usuario->getColorAuto();
 $marcaAuto = $usuario->getMarcaAuto();
+$licencia = $usuario->getLicencia();
+$estado = $usuario->getEstado();
 $contrasena = $usuario->getContrasena();
-
+$carrera = $usuario->getCarrera();
 
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -128,7 +135,7 @@ $contrasena = $usuario->getContrasena();
             <label for="matricula" style="display: block; text-align: center;" class="white-text"><b>2130155</b></label>
             <a href="conductor.html" class="menu-item"><i class="fas fa-location-dot"></i> Rutas</a>
             <a href="editar_conductor.html" class="menu-item"><i class="fa-solid fa-gear"></i> Perfil</a>
-            <a href="index.html" class="menu-item" onclick="confirmarCerrarSesion(event)"><i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión</a>
+            <a href="index.php" class="menu-item" onclick="confirmarCerrarSesion(event)"><i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión</a>
         </div>
     </div>
 
@@ -138,9 +145,17 @@ $contrasena = $usuario->getContrasena();
             <label for="input-imagen" class="position-absolute top-0 start-0">
                 <i class="fa-solid fa-image fa-3x"></i> <!-- Icono de imagen -->
             </label>
+            <form action="crud/cambiar_rol.php" method="post">
+                <button type="submit" name="rol_conductor" value="pasajero" class="btn btn-lg btn-purple float-right">Cambiar a Pasajero</button>
+            </form>
+            
+            <form action="crud/updateConductor.php?id_usuario=<?php echo $_GET['id_usuario']; ?>" method="post">
+
             <!-- Input oculto para cargar imagen -->
             <input type="file" id="input-imagen" style="display: none;" accept="image/*"> <!-- Icono en la posición izquierda superior -->
-            <button id="btn-actualizar" class="btn btn-lg btn-purple float-right">Actualizar</button> <!-- Botón de Actualizar --> <!-- Botón de Actualizar -->
+            <button type="submit" id="btn-actualizar" class="btn btn-lg btn-purple float-right">Actualizar</button> <!-- Botón de Actualizar --> <!-- Botón de Actualizar -->
+            
+        
             <div class="avatar-container-large">
                <centering><img id="avatar-img" src="img\icono-usuario.png" alt="Avatar" class="avatar-img-large"></centering>
             </div>
@@ -148,130 +163,96 @@ $contrasena = $usuario->getContrasena();
                 <div class="col-md-4">
                     <div class="form-group text-center">
                         <label for="nombre" class="text-center">Nombre:</label>
-                        <input type="text" class="form-control text-center" id="nombre" placeholder="Ingrese su nombre" value="<?php echo $nombreUsuario; ?>">
+                        <input type="text" class="form-control text-center" id="nombre" name="nombre" placeholder="Ingrese su nombre" value="<?php echo $nombreUsuario; ?>">
                     </div>
                     <div class="form-group text-center">
                         <label for="apellido1" class="text-center">Apellido Paterno:</label>
-                        <input type="text" class="form-control text-center" id="apellido1" placeholder="Ingrese apellido paterno" value="<?= $apellido1Usuario?>">
+                        <input type="text" class="form-control text-center" id="apellido1" name="apellido1" placeholder="Ingrese apellido paterno" value="<?= $apellido1Usuario?>">
                     </div>
                     <div class="form-group text-center">
                         <label for="apellido2" class="text-center">Apellido Materno:</label>
-                        <input type="text" class="form-control text-center" id="apellido2" placeholder="Ingrese apellido materno" value="<?= $apellido2Usuario?>">
+                        <input type="text" class="form-control text-center" id="apellido2" name="apellido2" placeholder="Ingrese apellido materno" value="<?= $apellido2Usuario?>">
                     </div>
                     <div class="form-group text-center">
                         <label for="nacimiento" class="text-center">Fecha de Nacimiento:</label>
-                        <input type="date" class="form-control text-center" id="nacimiento" value="<?= $fechaNacimiento?>">
+                        <input type="date" class="form-control text-center" id="nacimiento" name="nacimiento" value="<?= $fechaNacimiento?>">
                     </div>
                     <div class="form-group text-center">
                         <label for="placas" class="text-center">Placas:</label>
-                        <input type="text" class="form-control text-center" id="placas" placeholder="Ingrese placas" value="<?= $placasAuto?>">
+                        <input type="text" class="form-control text-center" id="placas" name="placas" placeholder="Ingrese placas" value="<?= $placasAuto?>">
                     </div>
                     <div class="form-group text-center">
                         <label for="molda" class="text-center">Modelo de Auto:</label>
-                        <input type="text" class="form-control text-center" id="molda" placeholder="Ingrese modelo de auto" value="<?= $modeloAuto?>">
+                        <input type="text" class="form-control text-center" id="molda" name="molda" placeholder="Ingrese modelo de auto" value="<?= $modeloAuto?>">
                     </div>
+                    <div class="form-group text-center">
+                        <label for="disponibilidad" class="text-center">Disponibilidad:</label>
+                        <select class="form-control text-center" id="disponibilidad" name="disponibilidad">
+                            <option value="1" <?= ($estado == 1) ? 'selected' : '' ?>>Activo</option>
+                            <option value="0" <?= ($estado == 0) ? 'selected' : '' ?>>Inactivo</option>
+                        </select>
+                    </div>
+
 
                 </div>
                 <div class="col-md-4">
                     <div class="form-group text-center">
                         <label for="telefono" class="text-center">Teléfono:</label>
-                        <input type="tel" class="form-control text-center" id="telefono" placeholder="Ingrese su número de teléfono" value="<?= $telefonoUsuario?>">
+                        <input type="tel" class="form-control text-center" id="telefono" name="telefono" placeholder="Ingrese su número de teléfono" value="<?= $telefonoUsuario?>">
                     </div>
                     <div class="form-group text-center">
                         <label for="matricula" class="text-center">Matrícula:</label>
-                        <input type="text" class="form-control text-center" id="matricula" placeholder="Ingrese su matrícula" value="<?= $matriculaUsuario?>">
+                        <input type="text" class="form-control text-center" id="matricula" name="matricula" placeholder="Ingrese su matrícula" value="<?= $matriculaUsuario?>" readonly>
                     </div>
                     <div class="form-group text-center">
                         <label for="correo" class="text-center">Correo Electrónico:</label>
-                        <input type="email" class="form-control text-center" id="correo" placeholder="Ingrese su correo electrónico" value="<?= $correoUsuario?>">
+                        <input type="email" class="form-control text-center" id="correo" name="correo" placeholder="Ingrese su correo electrónico" value="<?= $correoUsuario?>">
                     </div>
                     <div class="form-group text-center">
                         <label for="col" class="text-center">Color de Auto:</label>
-                        <input type="text" class="form-control text-center" id="col" placeholder="Ingrese color de auto" value="<?= $colorAuto?>">
+                        <input type="text" class="form-control text-center" id="col" name="col" placeholder="Ingrese color de auto" value="<?= $colorAuto?>">
                     </div>
                     <div class="form-group text-center">
                         <label for="marca" class="text-center">Marca de Auto:</label>
-                        <input type="text" class="form-control text-center" id="marca" placeholder="Ingrese la marca del auto" value="<?= $marcaAuto?>">
+                        <input type="text" class="form-control text-center" id="marca" name="marca" placeholder="Ingrese la marca del auto" value="<?= $marcaAuto?>">
                     </div>
-
+                    <div class="form-group text-center">
+                        <label for="marca" class="text-center">Licencia:</label>
+                        <input type="text" class="form-control text-center" id="licencia" name="licencia" placeholder="Ingrese el número de licencia" value="<?= $licencia?>">
+                    </div>
                     <div class="form-group text-center">
                         <label for="contrasena" class="text-center">Contraseña:</label>
-                        <input type="password" class="form-control text-center" id="contrasena" placeholder="Ingrese su contraseña"value="<?= $contrasena?>">
+                        <input type="password" class="form-control text-center" id="contrasena" name="contrasena" placeholder="Ingrese su contraseña" value="<?= $contrasena?>">
+                        <div class="form-group text-center">
+                        <label for="carrera" class="text-center">Carrera:</label>
+                        <select class="form-control text-center" id="carrera" name="carrera">
+                            <option value="">Selecciona una carrera</option>
+                            <?php
+                            // Consultar todas las carreras de la base de datos
+                            $query = "SELECT id_carrera, nombre FROM Carreras";
+                            $result = $conexion->query($query);
+
+                            // Verificar si hay resultados
+                            if ($result->num_rows > 0) {
+                                // Iterar sobre los resultados y crear opciones para el select
+                                while ($row = $result->fetch_assoc()) {
+                                    // Verificar si esta opción está seleccionada
+                                    $selected = ($row['id_carrera'] == $carrera) ? 'selected' : '';
+                                    echo "<option value='" . $row['id_carrera'] . "' $selected>" . $row['nombre'] . "</option>";
+                                }
+                            } else {
+                                echo "<option value=''>No hay carreras disponibles</option>";
+                            }
+                            ?>
+                        </select>
                     </div>
+
+
                 </div>
             </div>
+            
+            </form>
         </div>
     </div>
-    
-    
-    <script>
-        function confirmarCerrarSesion(event) {
-            event.preventDefault(); // Evita el comportamiento predeterminado del evento
-
-            Swal.fire({
-                title: "¿Estás seguro de cerrar sesión?",
-                text: "Se cerrará tu sesión actual.",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "purple",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Sí, cerrar sesión",
-                cancelButtonText: "Cancelar"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Redirige al usuario a la página de inicio de sesión (login.html)
-                    window.location.href = "index.html";
-                }
-            });
-        }
-    </script>
-    <script>
-        // Captura el evento de cambio del input de tipo archivo
-        document.getElementById('input-imagen').addEventListener('change', function(event) {
-            // Obtiene el archivo seleccionado
-            const file = event.target.files[0];
-            // Crea un objeto URL para la imagen seleccionada
-            const imageUrl = URL.createObjectURL(file);
-            // Actualiza la imagen del avatar con la imagen seleccionada
-            document.getElementById('avatar-img').src = imageUrl;
-        });
-    </script>
-    <script>
-        // Función para mostrar la alerta de actualización de datos
-        function mostrarAlertaActualizar(event) {
-            event.preventDefault(); // Evita el comportamiento predeterminado del evento
-    
-            Swal.fire({
-                title: "¿Estás seguro de actualizar tus datos?",
-                text: "Se actualizarán tus datos personales.",
-                icon: "info",
-                showCancelButton: true,
-                confirmButtonColor: "purple",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Sí, actualizar datos",
-                cancelButtonText: "Cancelar"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Aquí puedes agregar la lógica para realizar la actualización de datos
-                    // Por ejemplo, enviar una solicitud al servidor para guardar los cambios
-                    // Luego podrías mostrar una confirmación de que los datos se han actualizado correctamente
-                    Swal.fire({
-                        title: "Datos actualizados",
-                        text: "Tus datos se han actualizado correctamente.",
-                        icon: "success",
-                        confirmButtonColor: "purple"
-                    });
-                }
-            });
-        }
-    
-        // Agrega el evento de clic al botón de "Actualizar"
-        document.getElementById('btn-actualizar').addEventListener('click', mostrarAlertaActualizar);
-    </script>
-    
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-Xe8FIISpaF1FODdP7IjFmzHeGeFZhUByu2DdTm6l5on5Cv5uUZcXnKjpBy6QhpF4" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+WyIx8vHV5z5q1gF94tLl5MDO/aDlO7f5J" crossorigin="anonymous"></script>
-
 </body>
 </html>

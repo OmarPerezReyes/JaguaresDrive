@@ -102,7 +102,7 @@
         <a href="pasajero.html" class="menu-item"><i class="fas fa-location-dot"></i> Viajes disponibles</a>
         <a href="viaje.html" class="menu-item"><i class="fa-solid fa-car"></i> Mi viaje</a>
         <a href="editar.html" class="menu-item"><i class="fa-solid fa-gear"></i> Perfil</a>
-        <a href="index.html" class="menu-item" onclick="confirmarCerrarSesion(event)"><i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión</a>
+        <a href="index.php" class="menu-item" onclick="confirmarCerrarSesion(event)"><i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión</a>
         </nav>
     </div>
 
@@ -171,7 +171,7 @@
                 cancelButtonText: "Cancelar"
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.href = "index.html";
+                    window.location.href = "index.php";
                 }
             });
         }

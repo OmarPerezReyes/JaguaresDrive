@@ -1,5 +1,5 @@
 <?php
-include_once '../bd/conexion.php'; 
+include_once '../../bd/conexion.php'; 
 
 // Iniciar sesión
 session_start();
@@ -31,23 +31,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Redirigir según el rol del usuario
         if ($userRole == 1 && $rol == 'conductor') {
             // El usuario es conductor
-            header("Location: conductor.php");
+            header("Location: ../conductor.php");
             exit;
         } elseif ($userRole == 2 && $rol == 'pasajero') {
             // El usuario es pasajero
-            header("Location: pasajero.php");
+            header("Location: ../pasajero.php");
             exit;
         } else {
-            // El usuario seleccionó un rol incorrecto o no coincide con el rol en la base de datos
-            echo "El usuario no tiene acceso con el rol seleccionado.";
+            //El usuario seleccionó un rol incorrecto o no coincide con el rol en la base de datos
+            echo "<script>alert('El usuario no tiene acceso con el rol seleccionado.');history.back();</script>";
+
         }
     } else {
-        // El usuario o la contraseña son incorrectos
-        echo "<script>alert('Usuario o contraseña incorrectos.');</script>";
+        //El usuario o la contraseña son incorrectos
+        echo "<script>alert('Usuario o contraseña incorrectos.');history.back();</script>";
     }
 
-    // Cerrar la conexión
-    $conexion->close();
 }
 ?>
     

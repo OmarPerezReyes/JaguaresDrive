@@ -12,7 +12,7 @@ session_start();
 // Verificar si el usuario ha iniciado sesión y tiene el rol de conductor
 if (!isset($_SESSION['usuario_id']) || !isset($_SESSION['rol']) || $_SESSION['rol'] !== 'conductor') {
     // Usuario no autenticado o no tiene el rol de conductor, redirigir a la página de inicio de sesión
-    header("Location: index.html");
+    header("Location: index.php");
     exit;
 }
 
@@ -30,7 +30,7 @@ if ($result->num_rows > 0) {
 } else {
     // No se encontró el usuario en la base de datos, manejar el error según sea necesario
     // Por ejemplo, redirigir al usuario a la página de inicio de sesión con un mensaje de error
-    header("Location: index.html?error=user_not_found");
+    header("Location: index.php?error=user_not_found");
     exit;
 }
 
