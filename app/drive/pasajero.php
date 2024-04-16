@@ -1,3 +1,37 @@
+<?php
+
+include_once '../bd/conexion.php'; 
+
+session_start();
+
+// Verificar si el usuario ha iniciado sesión y tiene el rol de pasajero
+if (!isset($_SESSION['usuario_id']) || !isset($_SESSION['rol']) || $_SESSION['rol'] !== 'pasajero') {
+    // Usuario no autenticado o no tiene el rol de pasajero, redirigir a la página de inicio de sesión
+    header("Location: index.html");
+    exit;
+}
+
+// Obtener el nombre de usuario de las variables de sesión
+$nombreUsuario = "";
+
+// Obtener el nombre de usuario desde la base de datos utilizando el ID de usuario almacenado en la sesión
+// Por ejemplo, si tienes una conexión a la base de datos llamada $conexion, podrías hacer algo como esto:
+$usuarioId = $_SESSION['usuario_id'];
+$sql = "SELECT nombre FROM usuario WHERE usuario_id = $usuarioId";
+$result = $conexion->query($sql);
+
+if ($result->num_rows > 0) {
+    $row = $result->fetch_assoc();
+    $nombreUsuario = $row['nombre'];
+} else {
+    // No se encontró el usuario en la base de datos, manejar el error según sea necesario
+    // Por ejemplo, redirigir al usuario a la página de inicio de sesión con un mensaje de error
+    header("Location: index.html?error=user_not_found");
+    exit;
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -8,11 +42,9 @@
     <link rel="icon" href="public/images/logo-jaguares-drive.png" type="image/png" sizes="512x512">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link rel="stylesheet" href="css/diseño_conductor.css">
-
+    <link rel="stylesheet" href="css/diseño_pasajero.css">
     <!-- Enlace al icono para la pestaña -->
     <link rel="icon" href="img/logo.png" type="image/x-icon">
-
     <style>
         /* Estilos del precargador */
         #preloader {
@@ -88,24 +120,23 @@
         });
     </script>
 
-    
     <div id="sidebar">
         <div class="avatar-container">
             <img src="img/icono-usuario.png" alt="Avatar" class="avatar-img">
             <label for="matricula" class="matricula-label"><b>2130155</b></label>
         </div>
         <nav class="menu">
-            <a href="conductor.html" class="menu-item"><i class="fas fa-location-dot"></i> Rutas</a>
-            <a href="editar_conductor.html" class="menu-item"><i class="fa-solid fa-gear"></i> Perfil</a>
-            <a href="index.html" class="menu-item" onclick="confirmarCerrarSesion(event)"><i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión</a>
+            <a href="pasajero.html" class="menu-item"><i class="fas fa-location-dot"></i> Viajes disponibles</a>
+            <a href="viaje.html" class="menu-item"><i class="fa-solid fa-car"></i> Mi viaje</a>
+            <a href="editar.html" class="menu-item"><i class="fa-solid fa-gear"></i> Perfil</a>
+            <a href="cerrar_sesion.php" class="menu-item" onclick="confirmarCerrarSesion(event)"><i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión</a>
         </nav>
     </div>
-
 
     <!-- Resto del contenido HTML -->
     <div id="content">
         <!-- Añade aquí el contenido de tu página -->
-        <h1>Bienvenido</h1>
+        <h1>Bienvenido <?= $nombreUsuario ?></h1>
         <br>
         <div class="container-content">
             <div class="form-group">
@@ -120,9 +151,6 @@
                     </div>
                 </div>
             </div>
-           
-            <!-- MAPA -->
-         
         </div>
     </div>
 
@@ -142,28 +170,6 @@
                     `
                 },
                 scrollbarPadding: false
-            });
-        }
-
-        function confirmarInicioViaje(event) {
-            event.preventDefault(); // Evita el comportamiento predeterminado del evento
-
-            Swal.fire({
-                title: "¿Estás seguro de solicitar este viaje?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "purple",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "¡Sí!",
-                scrollbarPadding: false
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire({
-                        title: "¡Solicitud enviada!",
-                        text: "Esperando respuesta ...",
-                        icon: "success"
-                    });
-                }
             });
         }
 

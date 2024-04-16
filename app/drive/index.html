@@ -158,12 +158,23 @@
             <div class="form-information-childs">
                 <h2>Iniciar Sesión</h2>
                 <br>
+
+          
                
-            <form class="form form-register" method="post">
+            <form class="form form-register" method="post"  action="curdlogin.php">
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="user-role">
+                        <i class='ant-design:pushpin-filled'></i> Seleccione un rol de usuario...
+                    </label>
+                    <select class="form-select form-select-sm" id="user-role" name="user-role" aria-label="Large select example">
+                        <option value="1">Conductor</option>
+                        <option value="2">Pasajero</option>
+                    </select>
+                </div>
                 
                     <label class="input-container">
                         <i class='bx bx-user'></i>
-                        <input type="text" placeholder="Usuario" name="nombre" id="nombre">
+                        <input type="text" placeholder="Matricula" name="nombre" id="nombre">
                     </label>
     
                     <label class="input-container">
@@ -201,17 +212,18 @@
         <div class="form-information-childs">
             <h2>Crear Cuenta</h2>
 
-            <div class="input-group mb-3">
-                <label class="input-group-text" for="user-role">
-                    <i class='ant-design:pushpin-filled'></i> Seleccione un rol de usuario...
-                </label>
-                <select class="form-select form-select-sm" id="user-role" aria-label="Large select example">
-                    <option value="1">Conductor</option>
-                    <option value="2">Pasajero</option>
-                </select>
-            </div>
             
-            <form class="form form-register" method="post">
+            <form class="form form-register" method="post" action="crud.php">
+
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="user-role">
+                        <i class='ant-design:pushpin-filled'></i> Seleccione un rol de usuario...
+                    </label>
+                    <select class="form-select form-select-sm" id="user-role" name="user-role" aria-label="Large select example">
+                        <option value="1">Conductor</option>
+                        <option value="2">Pasajero</option>
+                    </select>
+                </div>
                 <div class="form-row">
                     <label class="input-container">
                         <i class='bx bx-user'></i>
@@ -284,6 +296,7 @@
                 <input type="button" value="Iniciar Sesión" id="sign-in">
             </div>
         </div>
+
     
         <!-- campos CONDUCTOR -->
         <div class="form-information">

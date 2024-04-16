@@ -1,3 +1,32 @@
+<?php
+// Incluir el archivo de conexión a la base de datos u otras clases necesarias
+require_once '../bd/conexion.php';
+require_once '../models/Usuario.php'; // Asegúrate de especificar la ruta correcta
+
+// Aquí debes incluir el código para obtener los datos del usuario, puedes usar la misma lógica que en conductor.php
+$usuarioId = $_GET['id_usuario'];
+
+// Por ejemplo, si ya tienes una instancia de UsuarioModel y tienes el ID del usuario almacenado en una variable $usuarioId, puedes obtener los datos del usuario así:
+$usuarioModel = new UsuarioModel();
+$usuario = $usuarioModel->obtenerUsuarioPorId($usuarioId);
+
+// Luego, asigna los datos del usuario a variables individuales
+$nombreUsuario = $usuario->getNombre();
+$apellido1Usuario = $usuario->getApellidoP();
+$apellido2Usuario = $usuario->getApellidoM();
+$fechaNacimiento = $usuario->getFechaNac();
+$telefonoUsuario = $usuario->getTelefono();
+$matriculaUsuario = $usuario->getMatricula();
+$correoUsuario = $usuario->getCorreo();
+$placasAuto = $usuario->getPlacas();
+$modeloAuto = $usuario->getModeloAuto();
+$colorAuto = $usuario->getColorAuto();
+$marcaAuto = $usuario->getMarcaAuto();
+$contrasena = $usuario->getContrasena();
+
+
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -119,55 +148,55 @@
                 <div class="col-md-4">
                     <div class="form-group text-center">
                         <label for="nombre" class="text-center">Nombre:</label>
-                        <input type="text" class="form-control text-center" id="nombre" placeholder="Ingrese su nombre">
+                        <input type="text" class="form-control text-center" id="nombre" placeholder="Ingrese su nombre" value="<?php echo $nombreUsuario; ?>">
                     </div>
                     <div class="form-group text-center">
                         <label for="apellido1" class="text-center">Apellido Paterno:</label>
-                        <input type="text" class="form-control text-center" id="apellido1" placeholder="Ingrese apellido paterno">
+                        <input type="text" class="form-control text-center" id="apellido1" placeholder="Ingrese apellido paterno" value="<?= $apellido1Usuario?>">
                     </div>
                     <div class="form-group text-center">
                         <label for="apellido2" class="text-center">Apellido Materno:</label>
-                        <input type="text" class="form-control text-center" id="apellido2" placeholder="Ingrese apellido materno">
+                        <input type="text" class="form-control text-center" id="apellido2" placeholder="Ingrese apellido materno" value="<?= $apellido2Usuario?>">
                     </div>
                     <div class="form-group text-center">
                         <label for="nacimiento" class="text-center">Fecha de Nacimiento:</label>
-                        <input type="date" class="form-control text-center" id="nacimiento">
+                        <input type="date" class="form-control text-center" id="nacimiento" value="<?= $fechaNacimiento?>">
                     </div>
                     <div class="form-group text-center">
                         <label for="placas" class="text-center">Placas:</label>
-                        <input type="text" class="form-control text-center" id="placas" placeholder="Ingrese placas">
+                        <input type="text" class="form-control text-center" id="placas" placeholder="Ingrese placas" value="<?= $placasAuto?>">
                     </div>
                     <div class="form-group text-center">
                         <label for="molda" class="text-center">Modelo de Auto:</label>
-                        <input type="text" class="form-control text-center" id="molda" placeholder="Ingrese modelo de auto">
+                        <input type="text" class="form-control text-center" id="molda" placeholder="Ingrese modelo de auto" value="<?= $modeloAuto?>">
                     </div>
 
                 </div>
                 <div class="col-md-4">
                     <div class="form-group text-center">
                         <label for="telefono" class="text-center">Teléfono:</label>
-                        <input type="tel" class="form-control text-center" id="telefono" placeholder="Ingrese su número de teléfono">
+                        <input type="tel" class="form-control text-center" id="telefono" placeholder="Ingrese su número de teléfono" value="<?= $telefonoUsuario?>">
                     </div>
                     <div class="form-group text-center">
                         <label for="matricula" class="text-center">Matrícula:</label>
-                        <input type="text" class="form-control text-center" id="matricula" placeholder="Ingrese su matrícula">
+                        <input type="text" class="form-control text-center" id="matricula" placeholder="Ingrese su matrícula" value="<?= $matriculaUsuario?>">
                     </div>
                     <div class="form-group text-center">
                         <label for="correo" class="text-center">Correo Electrónico:</label>
-                        <input type="email" class="form-control text-center" id="correo" placeholder="Ingrese su correo electrónico">
+                        <input type="email" class="form-control text-center" id="correo" placeholder="Ingrese su correo electrónico" value="<?= $correoUsuario?>">
                     </div>
                     <div class="form-group text-center">
                         <label for="col" class="text-center">Color de Auto:</label>
-                        <input type="text" class="form-control text-center" id="col" placeholder="Ingrese color de auto">
+                        <input type="text" class="form-control text-center" id="col" placeholder="Ingrese color de auto" value="<?= $colorAuto?>">
                     </div>
                     <div class="form-group text-center">
                         <label for="marca" class="text-center">Marca de Auto:</label>
-                        <input type="text" class="form-control text-center" id="marca" placeholder="Ingrese la marca del auto">
+                        <input type="text" class="form-control text-center" id="marca" placeholder="Ingrese la marca del auto" value="<?= $marcaAuto?>">
                     </div>
 
                     <div class="form-group text-center">
                         <label for="contrasena" class="text-center">Contraseña:</label>
-                        <input type="password" class="form-control text-center" id="contrasena" placeholder="Ingrese su contraseña">
+                        <input type="password" class="form-control text-center" id="contrasena" placeholder="Ingrese su contraseña"value="<?= $contrasena?>">
                     </div>
                 </div>
             </div>
