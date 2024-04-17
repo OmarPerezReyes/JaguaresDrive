@@ -149,8 +149,8 @@ if ($result->num_rows > 0) {
             <label for="matricula" class="matricula-label"><b>2130155</b></label>
         </div>
         <nav class="menu">
-            <a href="pasajero.html" class="menu-item"><i class="fas fa-location-dot"></i> Viajes disponibles</a>
-            <a href="viaje.html" class="menu-item"><i class="fa-solid fa-car"></i> Mi viaje</a>
+            <a href="pasajero.php" class="menu-item"><i class="fas fa-location-dot"></i> Viajes disponibles</a>
+            <a href="viaje.php" class="menu-item"><i class="fa-solid fa-car"></i> Mi viaje</a>
             <a href="editar.php" class="menu-item"><i class="fa-solid fa-gear"></i> Perfil</a>
             <a href="cerrar_sesion.php" class="menu-item" onclick="confirmarCerrarSesion(event)"><i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión</a>
         </nav>
@@ -162,19 +162,26 @@ if ($result->num_rows > 0) {
         <h1>Bienvenido <?= $nombreUsuario ?></h1>
         <br>
         <div class="container-content">
-            <div class="form-group">
-                <label for="punto-partida"><b>Selecciona tu punto de partida:</b></label>
-                <div class="input-group mb-3">
-                    <!-- Icono -->
-                    <span class="input-group-text"><i class="fas fa-location-dot"></i></span>
-                    <input type="text" class="form-control" placeholder="Buscar punto de partida" aria-label="Buscar punto de partida" aria-describedby="button-buscar">
-                    <!-- Botón de búsqueda -->
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary btn-buscar" type="button" id="button-buscar" style="width: 5cm; background-color: rgb(0, 0, 0); color: white; margin-left: auto;">Buscar</button>
-                    </div>
-                </div>
-            </div>
+            <?php
+            // Query to fetch all routes from the "rutas" table
+            $sql = "SELECT * FROM ruta";
+            $result = $conexion->query($sql);
+
+            if ($result->num_rows > 0) {
+                // Loop through each row of the result set
+                while ($row = $result->fetch_assoc()) {
+                    // Display the route information
+                    echo "<p>Route ID: " . $row['id_ruta'] . "</p>";
+                    echo "<p>Descripción: " . $row['descripcion'] . "</p>";
+                   echo "<a href='crud/solicitar_ruta.php'>Solicitar</a>";
+                    echo "<hr>";
+                }
+            } else {
+                echo "No routes available.";
+            }
+            ?>
         </div>
+    </div>
     </div>
 
     <script>

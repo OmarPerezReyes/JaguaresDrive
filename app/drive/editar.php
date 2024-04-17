@@ -140,10 +140,9 @@ if ($result->num_rows > 0) {
 
         <div class="menu">
             <label for="matricula" style="display: block; text-align: center;" class="white-text"><b><?php echo $matricula?></b></label>
-            <a href="conductor.html" class="menu-item"><i class="fas fa-location-dot"></i> Ruta</a>
-            <a href="solicitudes.html" class="menu-item"><i class="fa-solid fa-bell"></i></i> Solicitudes</a>
-            <a href="editar_conductor.html" class="menu-item"><i class="fa-solid fa-gear"></i> Perfil</a>
-            <a href="index.html" class="menu-item" onclick="confirmarCerrarSesion(event)"><i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión</a>
+            <a href="conductor.php" class="menu-item"><i class="fas fa-location-dot"></i> Ruta</a>
+            <a href="editar_conductor.php" class="menu-item"><i class="fa-solid fa-gear"></i> Perfil</a>
+            <a href="index.php" class="menu-item" onclick="confirmarCerrarSesion(event)"><i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión</a>
         </div>
     </div>
 

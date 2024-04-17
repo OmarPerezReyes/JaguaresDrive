@@ -21,7 +21,7 @@ $nombreUsuario = "";
 
 // Obtener el nombre de usuario desde la base de datos utilizando el ID de usuario almacenado en la sesión
 $usuarioId = $_SESSION['usuario_id'];
-$sql = "SELECT nombre FROM usuario WHERE usuario_id = $usuarioId";
+$sql = "SELECT nombre FROM usuario WHERE usuario_id = '$usuarioId'";
 $result = $conexion->query($sql);
 
 if ($result->num_rows > 0) {
@@ -34,7 +34,7 @@ if ($result->num_rows > 0) {
     exit;
 }
 
-$sql = "SELECT nombre, apellido_p, apellido_m, fecha_nac, telefono, matricula, correo,contrasena,foto,id_carrera FROM usuario WHERE usuario_id = $usuarioId";
+$sql = "SELECT nombre, apellido_p, apellido_m, fecha_nac, telefono, matricula, correo,contrasena,foto,id_carrera FROM usuario WHERE usuario_id = '$usuarioId'";
 $result = $conexion->query($sql);
 
 if ($result->num_rows > 0) {
@@ -69,6 +69,9 @@ if ($result->num_rows > 0) {
     <link rel="icon" href="public/images/logo-jaguares-drive.png" type="image/png" sizes="512x512">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC9TPtQVo1d15jPaORSaA082SlBqiv_f8s&libraries=places"></script>
+    <script src="../controllers/mapa.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC9TPtQVo1d15jPaORSaA082SlBqiv_f8s&callback=iniciarMap"></script>
     <link rel="stylesheet" href="css/diseño_conductor.css">
     <!-- Enlace al icono para la pestaña -->
     <link rel="icon" href="img/logo.png" type="image/x-icon">
@@ -171,17 +174,17 @@ if ($result->num_rows > 0) {
         <!-- Añade aquí el contenido de tu página -->
         <h1>Bienvenido <?php echo $nombreUsuario; ?></h1> <!-- Aquí se mostrará el nombre de usuario -->
         <br>
+        <form method="POST" action="crud/insertarRuta.php">
+        <input type="hidden" name="id_usuario" value="<?php echo $_SESSION['usuario_id']; ?>">
+        <input type="hidden" id="coordenadas2" name="coordenadas2" value="">
         <div class="container-content">
             <div class="form-group">
                 <label for="punto-partida"><b>Selecciona tu punto de partida:</b></label>
                 <div class="input-group mb-3">
                     <!-- Icono -->
                     <span class="input-group-text"><i class="fas fa-location-dot"></i></span>
-                    <input type="text" class="form-control" placeholder="Buscar punto de partida" aria-label="Buscar punto de partida" aria-describedby="button-buscar">
-                    <!-- Botón de búsqueda -->
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary btn-buscar" type="button" id="button-buscar" style="width: 5cm; background-color: rgb(0, 0, 0); color: white; margin-left: auto;">Buscar</button>
-                    </div>
+                    <input name="input0" type="text" class="form-control" placeholder="Buscar punto de partida" aria-label="Buscar punto de partida" aria-describedby="button-buscar">
+    
                 </div>
             </div>
             <label for="paradas"><b>Selecciona puntos de paradas:</b></label>
@@ -189,15 +192,19 @@ if ($result->num_rows > 0) {
                 <div class="form-group">
                     <div class="input-group mb-3">
                         <span class="input-group-text"><i class="fa-solid fa-location-pin"></i></span>
-                        <input type="text" class="form-control" placeholder="Buscar paradas" aria-label="Buscar paradas" aria-describedby="button-buscar-paradas">
+                        <input type="text" class="form-control" placeholder="Buscar paradas" name="input1" aria-label="Buscar paradas" aria-describedby="button-buscar-paradas">
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary btn-accion" type="button" id="button-agregar-parada" onclick="agregarPuntoParada()"><i class="fa-solid fa-plus"></i></button>
                             <button class="btn btn-outline-secondary btn-accion" type="button" id="button-eliminar-parada" onclick="eliminarPuntoParada()"><i class="fa-solid fa-minus"></i></button>
                         </div>
+                       
                     </div>
+                   
                 </div>
+                
             </div>
             <div id="map-container">
+            <button class="btn btn-outline-secondary btn-accion" type="button" id="button-agregar-parada" onclick="convertirDireccionADireccion()">Agregar a mapa</button>
                 <iframe src="../views/mapa.html" width="100%" height="500px" frameborder="0"></iframe>
             </div>
             <br>
@@ -206,9 +213,9 @@ if ($result->num_rows > 0) {
                 <label for="hora" style="margin-right: 510px;"><b>Hora de salida:</b></label>
                 <div class="input-group">
                     <span class="input-group-text">$</span>
-                    <input type="number" class="form-control" id="costo" placeholder="Ingrese el costo" aria-label="Ingrese el costo" aria-describedby="button-calcular">
+                    <input type="number" class="form-control" name="costo" id="costo" placeholder="Ingrese el costo" aria-label="Ingrese el costo" aria-describedby="button-calcular">
                     <span class="input-group-text"><i class="fa-solid fa-clock"></i></span>
-                    <input type="time" class="form-control" id="hora" aria-label="Ingrese la hora" aria-describedby="button-calcular">
+                    <input type="time" class="form-control" name="hora" id="hora" aria-label="Ingrese la hora" aria-describedby="button-calcular">
                 </div>
             </div>
             
@@ -216,14 +223,16 @@ if ($result->num_rows > 0) {
             
             <div class="form-group">
                 <label for="descripcion"><b>Descripción:</b></label>
-                <textarea class="form-control" id="descripcion" rows="3" placeholder="Ingrese la descripción"></textarea>
+                <textarea class="form-control" name="descripcion" id="descripcion" rows="3" placeholder="Ingrese la descripción"></textarea>
             </div>
-            <button type="button" class="btn btn-primary" onclick="confirmarInicioViaje(event)" style="background-color: rgb(0, 0, 0); color: white;">Subir Viaje</button>
+            <button type="submit" name="insertar_ruta" class="btn btn-primary" style="background-color: rgb(0, 0, 0); color: white;">Subir Viaje</button>
         </div>
     </div>
-
+    </form>
     <script>
+        var cont = 1;
         function agregarPuntoParada() {
+            cont++;
             var paradaContainer = document.getElementById('paradas-container');
             var newFormGroup = document.createElement('div');
             newFormGroup.classList.add('form-group');
@@ -231,7 +240,7 @@ if ($result->num_rows > 0) {
                 <div class="input-group mb-3">
                     <!-- Icono -->
                     <span class="input-group-text"><i class="fa-solid fa-location-pin"></i></span>
-                    <input type="text" class="form-control" placeholder="Buscar paradas" aria-label="Buscar paradas" aria-describedby="button-buscar-paradas">
+                    <input type="text" class="form-control" name="input`+ cont + `" placeholder="Buscar paradas" aria-label="Buscar paradas" aria-describedby="button-buscar-paradas">
                     <!-- Botones de acciones -->
                     <div class="input-group-append">
                         <!-- Botón de agregar -->
@@ -291,6 +300,45 @@ if ($result->num_rows > 0) {
                 }
             });
         }
+    </script>
+    <script>    
+
+function convertirDireccionADireccion() {
+    // Dirección a convertir
+    var cadenaOUT = "";
+
+    var inputs = document.querySelectorAll('input[name^="input"]');
+
+    inputs.forEach(function(input) {
+        var direccion = input.value;
+        // Crear un objeto Geocoder
+        var geocoder = new google.maps.Geocoder();
+
+        // Llamar a la función geocode con la dirección especificada
+        geocoder.geocode({ 'address': direccion }, function(results, status) {
+            if (status === google.maps.GeocoderStatus.OK) {
+                // Obtener las coordenadas de la dirección
+                var coordenadas = results[0].geometry.location;
+
+                // Mostrar las coordenadas en consola
+                console.log(coordenadas.lat() + ", " + coordenadas.lng() + "|");
+                cadenaOUT += coordenadas.lat().toString() + ", " + coordenadas.lng().toString() + "|";
+
+                // Asignar el valor a tu input oculto dentro de la función de retorno
+                document.getElementById("coordenadas2").value = cadenaOUT;
+                document.getElementsByName("coordenadas2")[0].value = cadenaOUT;
+            }
+        });
+    });
+
+    // Ten en cuenta que aquí el valor aún no se ha asignado porque la función geocoder.geocode() es asíncrona
+    // Por lo tanto, no es necesario asignarlo aquí nuevamente
+    //document.getElementById("coordenadas2").value = cadenaOUT;
+    //document.getElementsByName("coordenadas2")[0].value = cadenaOUT;
+
+    iniciarM(cadenaOUT);
+}
+
     </script>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

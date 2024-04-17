@@ -99,9 +99,9 @@
         <label for="matricula" style="display: block; text-align: center;" class="white-text"><b>2130155</b></label>
 
         <nav class="menu">
-        <a href="pasajero.html" class="menu-item"><i class="fas fa-location-dot"></i> Viajes disponibles</a>
-        <a href="viaje.html" class="menu-item"><i class="fa-solid fa-car"></i> Mi viaje</a>
-        <a href="editar.html" class="menu-item"><i class="fa-solid fa-gear"></i> Perfil</a>
+        <a href="pasajero.php" class="menu-item"><i class="fas fa-location-dot"></i> Viajes disponibles</a>
+        <a href="viaje.php" class="menu-item"><i class="fa-solid fa-car"></i> Mi viaje</a>
+        <a href="editar.php" class="menu-item"><i class="fa-solid fa-gear"></i> Perfil</a>
         <a href="index.php" class="menu-item" onclick="confirmarCerrarSesion(event)"><i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión</a>
         </nav>
     </div>

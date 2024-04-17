@@ -161,11 +161,9 @@
             <label for="matricula" class="matricula-label"><b>2130155</b></label>
         </div>
         <nav class="menu">
-            <label for="matricula" style="display: block; text-align: center;" class="white-text"><b>2130155</b></label>
-            <a href="conductor.html" class="menu-item"><i class="fas fa-location-dot"></i> Ruta</a>
-            <a href="conductor.html" class="menu-item"><i class="fa-solid fa-bell"></i></i> Solicitudes</a>
-            <a href="editar_conductor.html" class="menu-item"><i class="fa-solid fa-gear"></i> Perfil</a>
-            <a href="index.html" class="menu-item" onclick="confirmarCerrarSesion(event)"><i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión</a>
+            <a href="conductor.php" class="menu-item"><i class="fas fa-location-dot"></i> Rutas</a>
+            <a href="editar_conductor.php?id_usuario=<?php echo $_SESSION['usuario_id']; ?>" class="menu-item"><i class="fa-solid fa-gear"></i> Perfil</a>
+            <a href="cerrar_sesion.php" class="menu-item" onclick="confirmarCerrarSesion(event)"><i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión</a>
         </nav>
     </div>
 
@@ -183,7 +181,7 @@
                             <li><b>Apellido Materno:</b> García</li>
                             <li><b>Matrícula:</b> 2130155</li>
                             <li><b>Edad:</b> 30</li>
-                            <li><b>Ruta solicitada:</b> AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</li>
+                            <li><b>Ruta solicitada:</b></li>
                         </ul>
                         <div class="botones-container">
                             <button class="btn btn-success" onclick="aprobarSolicitud(1)"><i class="fa-solid fa-check"></i></button>
