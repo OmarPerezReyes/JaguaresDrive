@@ -14,7 +14,20 @@ if(isset($_POST['rol_pasajero'])) {
     $statement = $conexion->prepare($query);
     $statement->bind_param("si", $rol, $id_usuario);
     $statement->execute();
+    // Verificar si el usuario ya es conductor
+    $query_conductor = "SELECT * FROM conductor WHERE usuario_id=?";
+    $statement_conductor = $conexion->prepare($query_conductor);
+    $statement_conductor->bind_param("i", $id_usuario);
+    $statement_conductor->execute();
+    $result_conductor = $statement_conductor->get_result();
     
+    if ($result_conductor->num_rows == 0) {
+        // Si el usuario no es conductor, insertar en la tabla conductor
+        $sql_conductor = "INSERT INTO conductor (usuario_id, Estado_disponibilidad) VALUES (?, 1)";
+        $statement_insert_conductor = $conexion->prepare($sql_conductor);
+        $statement_insert_conductor->bind_param("i", $id_usuario);
+        $statement_insert_conductor->execute();
+    }
     // Redireccionar a alguna página después de la actualización
     header("Location: ../index.php");
 }
@@ -27,6 +40,21 @@ if(isset($_POST['rol_conductor'])) {
     $statement = $conexion->prepare($query);
     $statement->bind_param("si", $rol, $id_usuario);
     $statement->execute();
+
+    // Verificar si el usuario ya es pasajero
+    $query_pasajero = "SELECT * FROM pasajero WHERE usuario_id=?";
+    $statement_pasajero = $conexion->prepare($query_pasajero);
+    $statement_pasajero->bind_param("i", $id_usuario);
+    $statement_pasajero->execute();
+    $result_pasajero = $statement_pasajero->get_result();
+    
+    if ($result_pasajero->num_rows == 0) {
+        // Si el usuario no es pasajero, insertar en la tabla pasajero
+        $sql_pasajero = "INSERT INTO pasajero (usuario_id) VALUES (?)";
+        $statement_insert_pasajero = $conexion->prepare($sql_pasajero);
+        $statement_insert_pasajero->bind_param("i", $id_usuario);
+        $statement_insert_pasajero->execute();
+    }
     
     // Redireccionar a alguna página después de la actualización
     header("Location: ../index.php");

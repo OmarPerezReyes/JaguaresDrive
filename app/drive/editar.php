@@ -18,7 +18,7 @@ $nombreUsuario = "";
 
 // Obtener el nombre de usuario desde la base de datos utilizando el ID de usuario almacenado en la sesión
 $usuarioId = $_SESSION['usuario_id'];
-$sql = "SELECT nombre, apellido_p, apellido_m, fecha_nac, telefono, matricula, correo,contrasena,foto FROM usuario WHERE usuario_id = $usuarioId";
+$sql = "SELECT nombre, apellido_p, apellido_m, fecha_nac, telefono, matricula, correo,contrasena,foto,id_carrera FROM usuario WHERE usuario_id = $usuarioId";
 $result = $conexion->query($sql);
 
 if ($result->num_rows > 0) {
@@ -32,6 +32,7 @@ if ($result->num_rows > 0) {
     $correo = $row['correo'];
     $contrasena = $row['contrasena'];
     $imagen = $row['foto'];
+    $carrera = $row['id_carrera'];
 } else {
     // No se encontró el usuario en la base de datos, manejar el error según sea necesario
     // Por ejemplo, redirigir al usuario a la página de inicio de sesión con un mensaje de error
@@ -138,7 +139,7 @@ if ($result->num_rows > 0) {
         </div>
 
         <div class="menu">
-            <label for="matricula" style="display: block; text-align: center;" class="white-text"><b>2130155</b></label>
+            <label for="matricula" style="display: block; text-align: center;" class="white-text"><b><?php echo $matricula?></b></label>
             <a href="conductor.html" class="menu-item"><i class="fas fa-location-dot"></i> Ruta</a>
             <a href="solicitudes.html" class="menu-item"><i class="fa-solid fa-bell"></i></i> Solicitudes</a>
             <a href="editar_conductor.html" class="menu-item"><i class="fa-solid fa-gear"></i> Perfil</a>
@@ -152,67 +153,84 @@ if ($result->num_rows > 0) {
                
             <!-- Input oculto para cargar imagen -->
             <input type="file" id="input-imagen" style="display: none;" accept="image/*"> <!-- Icono en la posición izquierda superior -->
-           
-            <button id="btn-actualizar" class="btn btn-lg btn-purple float-right">Actualizar</button> <!-- Botón de Actualizar --> <!-- Botón de Actualizar -->
             <form action="crud/cambiar_rol.php" method="post">
                 <button type="submit" name="rol_pasajero" value="conductor" class="btn btn-lg btn-purple float-right">Cambiar a Conductor</button>
             </form>
+            <form action="crud/editar_pasajero.php?id_usuario=<?php echo $usuarioId; ?>" method="post">
+            <button type="submit" id="btn-actualizar" class="btn btn-lg btn-purple float-right">Actualizar</button> <!-- Botón de Actualizar --> <!-- Botón de Actualizar -->
+
             <div class="avatar-container-large">
-               <centering> <label for="input-imagen" class="position-absolute top-0 start-0">
-            <img src="fotos_perfil/<?php echo $imagen; ?>" class="card-img-top rounded-circle" alt="<?php echo $imagen; ?>" style="width:130px; height: 130px;">
-            </centering>
-
+                <centering>
+                    <label for="input-imagen" class="position-absolute top-0 start-0">
+                        <img src="fotos_perfil/<?php echo $imagen; ?>" class="card-img-top rounded-circle" alt="<?php echo $imagen; ?>" style="width:130px; height: 130px;">
+                    </label>
+                </centering>
             </div>
-
-       <!--     <centering><div class="input-group mb-3">
-                <label class="input-group-text" for="user-role">
-                    <i class='ant-design:pushpin-filled'></i> Seleccione un rol de usuario...
-                </label>
-                <select class="form-select form-select-sm" id="user-role" aria-label="Large select example">
-                    <option value="1">Conductor</option>
-                    <option value="2" selected>Pasajero</option>
-                </select>
-            </div></centering>-->
-
 
             <div class="row justify-content-center">
                 <div class="col-md-4">
                     <div class="form-group text-center">
                         <label for="nombre" class="text-center">Nombre:</label>
-                        <input type="text" class="form-control text-center" id="nombre" value="<?= $nombreUsuario ?>" placeholder="Ingrese su nombre">
+                        <input type="text" class="form-control text-center" id="nombre" name="nombre" placeholder="Ingrese su nombre" value="<?php echo $nombreUsuario; ?>" required>
                     </div>
                     <div class="form-group text-center">
                         <label for="apellido1" class="text-center">Apellido Paterno:</label>
-                        <input type="text" class="form-control text-center" id="apellido1" value="<?= $apellidoPaterno ?>" placeholder="Ingrese apellido paterno">
+                        <input type="text" class="form-control text-center" id="apellido1" name="apellido1" placeholder="Ingrese apellido paterno" value="<?= $apellidoPaterno?>" required>
                     </div>
                     <div class="form-group text-center">
                         <label for="apellido2" class="text-center">Apellido Materno:</label>
-                        <input type="text" class="form-control text-center" id="apellido2" value="<?= $apellidoMaterno ?>" placeholder="Ingrese apellido materno">
+                        <input type="text" class="form-control text-center" id="apellido2" name="apellido2" placeholder="Ingrese apellido materno" value="<?= $apellidoMaterno?>" required>
                     </div>
                     <div class="form-group text-center">
                         <label for="nacimiento" class="text-center">Fecha de Nacimiento:</label>
-                        <input type="date" class="form-control text-center" id="nacimiento" value="<?= $fechaNacimiento ?>">
+                        <input type="date" class="form-control text-center" id="nacimiento" name="nacimiento" value="<?= $fechaNacimiento?>" max="<?php echo date('Y-m-d', strtotime('-17 years')); ?>" required>
+                    </div>
+                    <div class="form-group text-center">
+                        <label for="telefono" class="text-center">Teléfono:</label>
+                        <input type="tel" class="form-control text-center" id="telefono" name="telefono" placeholder="Ingrese su número de teléfono" value="<?= $telefono?>" required>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group text-center">
-                        <label for="telefono" class="text-center">Teléfono:</label>
-                        <input type="tel" class="form-control text-center" id="telefono" value="<?= $telefono ?>" placeholder="Ingrese su número de teléfono">
-                    </div>
-                    <div class="form-group text-center">
                         <label for="matricula" class="text-center">Matrícula:</label>
-                        <input type="text" class="form-control text-center" id="matricula" value="<?= $matricula ?>" placeholder="Ingrese su matrícula" readonly>
+                        <input type="text" class="form-control text-center" id="matricula" name="matricula" placeholder="Ingrese su matrícula" value="<?= $matricula?>" readonly>
                     </div>
                     <div class="form-group text-center">
                         <label for="correo" class="text-center">Correo Electrónico:</label>
-                        <input type="email" class="form-control text-center" id="correo" value="<?= $correo ?>" placeholder="Ingrese su correo electrónico">
+                        <input type="email" class="form-control text-center" id="correo" name="correo" placeholder="Ingrese su correo electrónico" value="<?= $correo?>" required>
                     </div>
                     <div class="form-group text-center">
                         <label for="contrasena" class="text-center">Contraseña:</label>
-                        <input type="password" class="form-control text-center" id="contrasena" value="<?= $contrasena ?>" placeholder="Ingrese su contraseña">
+                        <input type="password" class="form-control text-center" id="contrasena" name="contrasena" placeholder="Ingrese su contraseña" value="<?= $contrasena?>" required>
+                    </div>
+                    <div class="form-group text-center">
+                        <label for="carrera" class="text-center">Carrera:</label>
+                        <select class="form-control text-center" id="carrera" name="carrera" required>
+                            <?php
+                            // Consultar todas las carreras de la base de datos
+                            $query = "SELECT id_carrera, nombre FROM carreras";
+                            $result = $conexion->query($query);
+
+                            // Verificar si hay resultados
+                            if ($result->num_rows > 0) {
+                                // Iterar sobre los resultados y crear opciones para el select
+                                while ($row = $result->fetch_assoc()) {
+                                    // Verificar si esta opción está seleccionada
+                                    $selected = ($row['id_carrera'] == $carrera) ? 'selected' : '';
+                                    echo "<option value='" . $row['id_carrera'] . "' $selected>" . $row['nombre'] . "</option>";
+                                }
+                            } else {
+                                echo "<option value=''>No hay carreras disponibles</option>";
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="form-group text-center">
                     </div>
                 </div>
             </div>
+        </form>
+
         </div>
     </div>
     
@@ -238,7 +256,7 @@ if ($result->num_rows > 0) {
             });
         }
     </script>
-    <script>
+  <!--  <script>
         // Captura el evento de cambio del input de tipo archivo
         document.getElementById('input-imagen').addEventListener('change', function(event) {
             // Obtiene el archivo seleccionado
@@ -280,7 +298,7 @@ if ($result->num_rows > 0) {
     
         // Agrega el evento de clic al botón de "Actualizar"
         document.getElementById('btn-actualizar').addEventListener('click', mostrarAlertaActualizar);
-    </script>
+    </script>-->
     
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-Xe8FIISpaF1FODdP7IjFmzHeGeFZhUByu2DdTm6l5on5Cv5uUZcXnKjpBy6QhpF4" crossorigin="anonymous"></script>

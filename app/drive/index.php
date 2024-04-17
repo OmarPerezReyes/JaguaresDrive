@@ -219,10 +219,11 @@ $conexion = $objConexion->conectar();
             <form class="form form-register" method="post" action="crud/crud.php" enctype="multipart/form-data">
 
                 <div class="input-group mb-3">
+                    
                     <label class="input-group-text" for="user-role">
                         <i class='ant-design:pushpin-filled'></i>Rol de usuario
                     </label>
-                    <select class="form-select form-select-sm" id="user-role" name="user-role" aria-label="Large select example">
+                    <select class="form-select form-select-sm" id="user-role" name="user-role" aria-label="Large select example" required>
                     <option value="2">Pasajero</option>
                     <option value="1">Conductor</option>
                     </select>
@@ -237,56 +238,57 @@ $conexion = $objConexion->conectar();
                 <div class="form-row">
                     <label class="input-container">
                         <i class='bx bx-user'></i>
-                        <input type="text" placeholder="Nombre" name="nombre" id="nombre" >
+                        <input type="text" placeholder="Nombre" name="nombre" id="nombre" required>
                     </label>
 
                     <label class="input-container">
                         <i class='bx bx-user'></i>
-                        <input type="text" placeholder="Apellido Paterno" name="apep" id="apep">
+                        <input type="text" placeholder="Apellido Paterno" name="apep" id="apep" required>
                     </label>
                 </div>
                 
                 <div class="form-row">
                     <label class="input-container">
                         <i class='bx bx-user'></i>
-                        <input type="text" placeholder="Apellido Materno" name="apem" id="apem">
+                        <input type="text" placeholder="Apellido Materno" name="apem" id="apem" required>
                     </label>
 
                     <label class="input-container">
                         <i class='bx bx-calendar'></i>
-                        <input type="date" placeholder="Fecha de Nacimiento" name="fecha" id="fecha">
+                        <input type="date" placeholder="Fecha de Nacimiento" name="fecha" id="fecha" max="<?php echo date('Y-m-d', strtotime('-17 years')); ?>" required>
                     </label>
+
+
                 </div>
             
                 <div class="form-row">
                     <label class="input-container">
                         <i class='bx bx-envelope'></i>
-                        <input type="email" placeholder="Correo electrónico" name="correo" id="correo">
+                        <input type="email" placeholder="Correo electrónico" name="correo" id="correo" required>
                     </label>
 
                     <label class="input-container">
                         <i class='bx bx-phone'></i>
-                        <input type="tel" placeholder="Teléfono" name="tele" id="tele" pattern="\d{10}">
+                        <input type="tel" placeholder="Teléfono" name="tele" id="tele" pattern="\d{10}" required>
                     </label>
                 </div>
                 
                 <div class="form-row">
                     <label class="input-container">
                         <i class='bx bx-id-card'></i>
-                        <input type="number" placeholder="Matrícula" name="mat" id="mat">
+                        <input type="number" placeholder="Matrícula" name="mat" id="mat"required>
                     </label>
 
                     <!--i class='bx bx-building-house'-->
                     <label class="input-container">
                         <i class='bx bx-lock-alt'></i>
-                        <input type="password" placeholder="Contraseña" name="pass" id="pass">
+                        <input type="password" placeholder="Contraseña" name="pass" id="pass"required>
                     </label>
                 </div>
                 <div class="form-row">
                 <label class="input-container">
                     <i class='bx bx-lock-alt'></i>
                     <select name="carrera" id="carrera" required>
-                        <option value="" >Selecciona una carrera</option>
                         <?php
                         // Consulta todas las carreras de la base de datos
                         $query = "SELECT id_carrera, nombre FROM Carreras";

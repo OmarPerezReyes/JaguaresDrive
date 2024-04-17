@@ -11,7 +11,26 @@ $conexion = $conexion_bd->conectar();
 
 // Aquí debes incluir el código para obtener los datos del usuario, puedes usar la misma lógica que en conductor.php
 $usuarioId = $_GET['id_usuario'];
-
+$usuarioId = $_SESSION['usuario_id'];
+$sql = "SELECT nombre, apellido_p, apellido_m, fecha_nac, telefono, matricula, correo,contrasena,foto FROM usuario WHERE usuario_id = $usuarioId";
+$result = $conexion->query($sql);
+if ($result->num_rows > 0) {
+    $row = $result->fetch_assoc();
+    $nombreUsuario = $row['nombre'];
+    $apellidoPaterno = $row['apellido_p'];
+    $apellidoMaterno = $row['apellido_m'];
+    $fechaNacimiento = $row['fecha_nac'];
+    $telefono = $row['telefono'];
+    $matricula = $row['matricula'];
+    $correo = $row['correo'];
+    $contrasena = $row['contrasena'];
+    $imagen = $row['foto'];
+} else {
+    // No se encontró el usuario en la base de datos, manejar el error según sea necesario
+    // Por ejemplo, redirigir al usuario a la página de inicio de sesión con un mensaje de error
+    header("Location: index.php?error=user_not_found");
+    exit;
+}
 // Por ejemplo, si ya tienes una instancia de UsuarioModel y tienes el ID del usuario almacenado en una variable $usuarioId, puedes obtener los datos del usuario así:
 $usuarioModel = new UsuarioModel();
 $usuario = $usuarioModel->obtenerUsuarioPorId($usuarioId);
@@ -127,15 +146,10 @@ $carrera = $usuario->getCarrera();
     <!--Fin de precargador-->
 
     <div id="sidebar">
-            <div class="avatar-container-large">
-               <centering> <label for="input-imagen" class="position-absolute top-0 start-0">
-            <img src="fotos_perfil/<?php echo $imagen; ?>" class="card-img-top rounded-circle" alt="<?php echo $imagen; ?>" style="width:130px; height: 130px;">
-            </centering>
-            
-            </div>
+
 
         <div class="menu">
-            <label for="matricula" style="display: block; text-align: center;" class="white-text"><b>2130155</b></label>
+            <label for="matricula" style="display: block; text-align: center;" class="white-text"><b><?php echo $matricula?></b></label>
             <a href="conductor.html" class="menu-item"><i class="fas fa-location-dot"></i> Rutas</a>
             <a href="editar_conductor.html" class="menu-item"><i class="fa-solid fa-gear"></i> Perfil</a>
             <a href="index.php" class="menu-item" onclick="confirmarCerrarSesion(event)"><i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión</a>
@@ -144,10 +158,7 @@ $carrera = $usuario->getCarrera();
 
     <div id="content">
         <div class="container-content">
-            <!-- Icono de imagen con evento de clic -->
-            <label for="input-imagen" class="position-absolute top-0 start-0">
-                <i class="fa-solid fa-image fa-3x"></i> <!-- Icono de imagen -->
-            </label>
+
             <form action="crud/cambiar_rol.php" method="post">
                 <button type="submit" name="rol_conductor" value="pasajero" class="btn btn-lg btn-purple float-right">Cambiar a Pasajero</button>
             </form>
@@ -160,37 +171,39 @@ $carrera = $usuario->getCarrera();
             
         
             <div class="avatar-container-large">
-               <centering><img id="avatar-img" src="img\icono-usuario.png" alt="Avatar" class="avatar-img-large"></centering>
-            </div>
+            <centering> <label for="input-imagen" class="position-absolute top-0 start-0">
+            <img src="fotos_perfil/<?php echo $imagen; ?>" class="card-img-top rounded-circle" alt="<?php echo $imagen; ?>" style="width:130px; height: 130px;">
+    </centering>            </div>
             <div class="row justify-content-center">
                 <div class="col-md-4">
                     <div class="form-group text-center">
                         <label for="nombre" class="text-center">Nombre:</label>
-                        <input type="text" class="form-control text-center" id="nombre" name="nombre" placeholder="Ingrese su nombre" value="<?php echo $nombreUsuario; ?>">
+                        <input type="text" class="form-control text-center" id="nombre" name="nombre" placeholder="Ingrese su nombre" value="<?php echo $nombreUsuario; ?>"required>
                     </div>
                     <div class="form-group text-center">
                         <label for="apellido1" class="text-center">Apellido Paterno:</label>
-                        <input type="text" class="form-control text-center" id="apellido1" name="apellido1" placeholder="Ingrese apellido paterno" value="<?= $apellido1Usuario?>">
+                        <input type="text" class="form-control text-center" id="apellido1" name="apellido1" placeholder="Ingrese apellido paterno" value="<?= $apellido1Usuario?>" required>
                     </div>
                     <div class="form-group text-center">
                         <label for="apellido2" class="text-center">Apellido Materno:</label>
-                        <input type="text" class="form-control text-center" id="apellido2" name="apellido2" placeholder="Ingrese apellido materno" value="<?= $apellido2Usuario?>">
+                        <input type="text" class="form-control text-center" id="apellido2" name="apellido2" placeholder="Ingrese apellido materno" value="<?= $apellido2Usuario?>"required>
                     </div>
                     <div class="form-group text-center">
                         <label for="nacimiento" class="text-center">Fecha de Nacimiento:</label>
-                        <input type="date" class="form-control text-center" id="nacimiento" name="nacimiento" value="<?= $fechaNacimiento?>">
+                        <input type="date" class="form-control text-center" id="nacimiento" name="nacimiento" value="<?= $fechaNacimiento?>" max="<?php echo date('Y-m-d', strtotime('-17 years')); ?>" required>
+
                     </div>
                     <div class="form-group text-center">
                         <label for="placas" class="text-center">Placas:</label>
-                        <input type="text" class="form-control text-center" id="placas" name="placas" placeholder="Ingrese placas" value="<?= $placasAuto?>">
+                        <input type="text" class="form-control text-center" id="placas" name="placas" placeholder="Ingrese placas" value="<?= $placasAuto?>"required>
                     </div>
                     <div class="form-group text-center">
                         <label for="molda" class="text-center">Modelo de Auto:</label>
-                        <input type="text" class="form-control text-center" id="molda" name="molda" placeholder="Ingrese modelo de auto" value="<?= $modeloAuto?>">
+                        <input type="text" class="form-control text-center" id="molda" name="molda" placeholder="Ingrese modelo de auto" value="<?= $modeloAuto?>" required>
                     </div>
                     <div class="form-group text-center">
                         <label for="disponibilidad" class="text-center">Disponibilidad:</label>
-                        <select class="form-control text-center" id="disponibilidad" name="disponibilidad">
+                        <select class="form-control text-center" id="disponibilidad" name="disponibilidad" required>
                             <option value="1" <?= ($estado == 1) ? 'selected' : '' ?>>Activo</option>
                             <option value="0" <?= ($estado == 0) ? 'selected' : '' ?>>Inactivo</option>
                         </select>
@@ -201,7 +214,7 @@ $carrera = $usuario->getCarrera();
                 <div class="col-md-4">
                     <div class="form-group text-center">
                         <label for="telefono" class="text-center">Teléfono:</label>
-                        <input type="tel" class="form-control text-center" id="telefono" name="telefono" placeholder="Ingrese su número de teléfono" value="<?= $telefonoUsuario?>">
+                        <input type="tel" class="form-control text-center" id="telefono" name="telefono" placeholder="Ingrese su número de teléfono" value="<?= $telefonoUsuario?>" required>
                     </div>
                     <div class="form-group text-center">
                         <label for="matricula" class="text-center">Matrícula:</label>
@@ -209,27 +222,26 @@ $carrera = $usuario->getCarrera();
                     </div>
                     <div class="form-group text-center">
                         <label for="correo" class="text-center">Correo Electrónico:</label>
-                        <input type="email" class="form-control text-center" id="correo" name="correo" placeholder="Ingrese su correo electrónico" value="<?= $correoUsuario?>">
+                        <input type="email" class="form-control text-center" id="correo" name="correo" placeholder="Ingrese su correo electrónico" value="<?= $correoUsuario?>" required>
                     </div>
                     <div class="form-group text-center">
                         <label for="col" class="text-center">Color de Auto:</label>
-                        <input type="text" class="form-control text-center" id="col" name="col" placeholder="Ingrese color de auto" value="<?= $colorAuto?>">
+                        <input type="text" class="form-control text-center" id="col" name="col" placeholder="Ingrese color de auto" value="<?= $colorAuto?>" required>
                     </div>
                     <div class="form-group text-center">
                         <label for="marca" class="text-center">Marca de Auto:</label>
-                        <input type="text" class="form-control text-center" id="marca" name="marca" placeholder="Ingrese la marca del auto" value="<?= $marcaAuto?>">
+                        <input type="text" class="form-control text-center" id="marca" name="marca" placeholder="Ingrese la marca del auto" value="<?= $marcaAuto?>"required>
                     </div>
                     <div class="form-group text-center">
                         <label for="marca" class="text-center">Licencia:</label>
-                        <input type="text" class="form-control text-center" id="licencia" name="licencia" placeholder="Ingrese el número de licencia" value="<?= $licencia?>">
+                        <input type="text" class="form-control text-center" id="licencia" name="licencia" placeholder="Ingrese el número de licencia" value="<?= $licencia?>"required>
                     </div>
                     <div class="form-group text-center">
                         <label for="contrasena" class="text-center">Contraseña:</label>
-                        <input type="password" class="form-control text-center" id="contrasena" name="contrasena" placeholder="Ingrese su contraseña" value="<?= $contrasena?>">
+                        <input type="password" class="form-control text-center" id="contrasena" name="contrasena" placeholder="Ingrese su contraseña" value="<?= $contrasena?>"required>
                         <div class="form-group text-center">
                         <label for="carrera" class="text-center">Carrera:</label>
-                        <select class="form-control text-center" id="carrera" name="carrera">
-                            <option value="">Selecciona una carrera</option>
+                        <select class="form-control text-center" id="carrera" name="carrera" required>
                             <?php
                             // Consultar todas las carreras de la base de datos
                             $query = "SELECT id_carrera, nombre FROM Carreras";

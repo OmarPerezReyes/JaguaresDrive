@@ -4,7 +4,7 @@ class Conexion{
 private $server_name = "localhost";
 private $user_name = "root";
 private $password = "";
-private $dbname = "didi_upv";
+private $dbname = "prueba_didi";
 
 
 public function conectar() {

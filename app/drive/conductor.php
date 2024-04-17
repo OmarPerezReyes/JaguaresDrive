@@ -34,6 +34,28 @@ if ($result->num_rows > 0) {
     exit;
 }
 
+$sql = "SELECT nombre, apellido_p, apellido_m, fecha_nac, telefono, matricula, correo,contrasena,foto,id_carrera FROM usuario WHERE usuario_id = $usuarioId";
+$result = $conexion->query($sql);
+
+if ($result->num_rows > 0) {
+    $row = $result->fetch_assoc();
+    $nombreUsuario = $row['nombre'];
+    $apellidoPaterno = $row['apellido_p'];
+    $apellidoMaterno = $row['apellido_m'];
+    $fechaNacimiento = $row['fecha_nac'];
+    $telefono = $row['telefono'];
+    $matricula = $row['matricula'];
+    $correo = $row['correo'];
+    $contrasena = $row['contrasena'];
+    $imagen = $row['foto'];
+    $carrera = $row['id_carrera'];
+} else {
+    // No se encontró el usuario en la base de datos, manejar el error según sea necesario
+    // Por ejemplo, redirigir al usuario a la página de inicio de sesión con un mensaje de error
+    header("Location: index.php?error=user_not_found");
+    exit;
+}
+
 ?>
 
 
