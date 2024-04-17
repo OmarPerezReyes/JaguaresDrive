@@ -216,21 +216,28 @@ $conexion = $objConexion->conectar();
         <div class="form-information-childs">
             <h2>Crear Cuenta</h2>
 
-            <form class="form form-register" method="post" action="crud/crud.php">
+            <form class="form form-register" method="post" action="crud/crud.php" enctype="multipart/form-data">
 
                 <div class="input-group mb-3">
                     <label class="input-group-text" for="user-role">
-                        <i class='ant-design:pushpin-filled'></i> Seleccione un rol de usuario...
+                        <i class='ant-design:pushpin-filled'></i>Rol de usuario
                     </label>
                     <select class="form-select form-select-sm" id="user-role" name="user-role" aria-label="Large select example">
-                        <option value="1">Conductor</option>
-                        <option value="2">Pasajero</option>
+                    <option value="2">Pasajero</option>
+                    <option value="1">Conductor</option>
                     </select>
+                    <label class="input-container">
+                            <i class='bx bx-image'></i> <!-- Icono para indicar carga de imagen -->
+                            <input type="file" id="imagen" name="imagen" class="form-control-file" accept="image/*" required>
+                    </label>
+                    
+
                 </div>
+
                 <div class="form-row">
                     <label class="input-container">
                         <i class='bx bx-user'></i>
-                        <input type="text" placeholder="Nombre" name="nombre" id="nombre">
+                        <input type="text" placeholder="Nombre" name="nombre" id="nombre" >
                     </label>
 
                     <label class="input-container">
@@ -297,6 +304,7 @@ $conexion = $objConexion->conectar();
                         ?>
                     </select>
                 </label>
+       
             </div>
                 <input type="submit" value="Registrarse">
             </form>

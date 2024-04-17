@@ -127,9 +127,12 @@ $carrera = $usuario->getCarrera();
     <!--Fin de precargador-->
 
     <div id="sidebar">
-        <div class="avatar-container">
-            <img src="img\icono-usuario.png" alt="Avatar" class="avatar-img">
-        </div>
+            <div class="avatar-container-large">
+               <centering> <label for="input-imagen" class="position-absolute top-0 start-0">
+            <img src="fotos_perfil/<?php echo $imagen; ?>" class="card-img-top rounded-circle" alt="<?php echo $imagen; ?>" style="width:130px; height: 130px;">
+            </centering>
+            
+            </div>
 
         <div class="menu">
             <label for="matricula" style="display: block; text-align: center;" class="white-text"><b>2130155</b></label>

@@ -18,7 +18,7 @@ $nombreUsuario = "";
 
 // Obtener el nombre de usuario desde la base de datos utilizando el ID de usuario almacenado en la sesión
 $usuarioId = $_SESSION['usuario_id'];
-$sql = "SELECT nombre, apellido_p, apellido_m, fecha_nac, telefono, matricula, correo,contrasena FROM usuario WHERE usuario_id = $usuarioId";
+$sql = "SELECT nombre, apellido_p, apellido_m, fecha_nac, telefono, matricula, correo,contrasena,foto FROM usuario WHERE usuario_id = $usuarioId";
 $result = $conexion->query($sql);
 
 if ($result->num_rows > 0) {
@@ -31,6 +31,7 @@ if ($result->num_rows > 0) {
     $matricula = $row['matricula'];
     $correo = $row['correo'];
     $contrasena = $row['contrasena'];
+    $imagen = $row['foto'];
 } else {
     // No se encontró el usuario en la base de datos, manejar el error según sea necesario
     // Por ejemplo, redirigir al usuario a la página de inicio de sesión con un mensaje de error
@@ -145,20 +146,21 @@ if ($result->num_rows > 0) {
         </div>
     </div>
 
-    <div id="content">
-        <div class="container-content">
-            <!-- Icono de imagen con evento de clic -->
-            <label for="input-imagen" class="position-absolute top-0 start-0">
-                <i class="fa-solid fa-image fa-3x"></i> <!-- Icono de imagen -->
-            </label>
+        <div id="content">
+            <div class="container-content">
+                <!-- Icono de imagen con evento de clic -->
+               
             <!-- Input oculto para cargar imagen -->
             <input type="file" id="input-imagen" style="display: none;" accept="image/*"> <!-- Icono en la posición izquierda superior -->
+           
             <button id="btn-actualizar" class="btn btn-lg btn-purple float-right">Actualizar</button> <!-- Botón de Actualizar --> <!-- Botón de Actualizar -->
             <form action="crud/cambiar_rol.php" method="post">
                 <button type="submit" name="rol_pasajero" value="conductor" class="btn btn-lg btn-purple float-right">Cambiar a Conductor</button>
             </form>
             <div class="avatar-container-large">
-               <centering><img id="avatar-img" src="img\icono-usuario.png" alt="Avatar" class="avatar-img-large"></centering>
+               <centering> <label for="input-imagen" class="position-absolute top-0 start-0">
+            <img src="fotos_perfil/<?php echo $imagen; ?>" class="card-img-top rounded-circle" alt="<?php echo $imagen; ?>" style="width:130px; height: 130px;">
+            </centering>
 
             </div>
 
