@@ -164,7 +164,8 @@ if ($result->num_rows > 0) {
         </div>
         <nav class="menu">
             <a href="conductor.php" class="menu-item"><i class="fas fa-location-dot"></i> Rutas</a>
-            <a href="editar_conductor.php?id_usuario=<?php echo $_SESSION['usuario_id']; ?>" class="menu-item"><i class="fa-solid fa-gear"></i> Perfil</a>
+            <a href="solicitudes.php?id_usuario=<?php echo $usuarioId; ?>" class="menu-item"><i class="fa-solid fa-car"></i> Solicitudes</a>
+            <a href="editar_conductor.php?id_usuario=<?php echo $usuarioId; ?>" class="menu-item"><i class="fa-solid fa-gear"></i> Perfil</a>
             <a href="cerrar_sesion.php" class="menu-item" onclick="confirmarCerrarSesion(event)"><i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión</a>
         </nav>
     </div>

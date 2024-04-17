@@ -150,7 +150,7 @@ if ($result->num_rows > 0) {
         </div>
         <nav class="menu">
             <a href="pasajero.php" class="menu-item"><i class="fas fa-location-dot"></i> Viajes disponibles</a>
-            <a href="viaje.php" class="menu-item"><i class="fa-solid fa-car"></i> Mi viaje</a>
+            <a href="viaje.php?id_usuario=<?php echo $usuarioId; ?>" class="menu-item"><i class="fa-solid fa-car"></i> Mi viaje</a>
             <a href="editar.php" class="menu-item"><i class="fa-solid fa-gear"></i> Perfil</a>
             <a href="cerrar_sesion.php" class="menu-item" onclick="confirmarCerrarSesion(event)"><i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión</a>
         </nav>
@@ -173,7 +173,7 @@ if ($result->num_rows > 0) {
                     // Display the route information
                     echo "<p>Route ID: " . $row['id_ruta'] . "</p>";
                     echo "<p>Descripción: " . $row['descripcion'] . "</p>";
-                   echo "<a href='crud/solicitar_ruta.php'>Solicitar</a>";
+                   echo "<a href='crud/solicitar_ruta.php?ruta=".$row['id_ruta']."&id_us=".$usuarioId."'>Solicitar</a>";
                     echo "<hr>";
                 }
             } else {

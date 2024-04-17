@@ -1,3 +1,9 @@
+<?php
+
+$id_usuario = $_GET['id_usuario'];
+
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -162,7 +168,8 @@
         </div>
         <nav class="menu">
             <a href="conductor.php" class="menu-item"><i class="fas fa-location-dot"></i> Rutas</a>
-            <a href="editar_conductor.php?id_usuario=<?php echo $_SESSION['usuario_id']; ?>" class="menu-item"><i class="fa-solid fa-gear"></i> Perfil</a>
+            <a href="solicitudes.php?id_usuario=<?php echo $id_usuario; ?>" class="menu-item"><i class="fa-solid fa-car"></i> Solicitudes</a>
+            <a href="editar_conductor.php?id_usuario=<?php echo $id_usuario; ?>" class="menu-item"><i class="fa-solid fa-gear"></i> Perfil</a>
             <a href="cerrar_sesion.php" class="menu-item" onclick="confirmarCerrarSesion(event)"><i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión</a>
         </nav>
     </div>
@@ -173,23 +180,65 @@
         <h1>Solicitudes</h1>
         <div class="container-content">
             <div class="solicitudes-wrapper">
-                <div class="solicitud-container" id="solicitud-1">
-                    <div class="solicitud-content">
-                        <ul>
-                            <li><b>Nombre:</b> Juan</li>
-                            <li><b>Apellido Paterno:</b> Pérez</li>
-                            <li><b>Apellido Materno:</b> García</li>
-                            <li><b>Matrícula:</b> 2130155</li>
-                            <li><b>Edad:</b> 30</li>
-                            <li><b>Ruta solicitada:</b></li>
-                        </ul>
-                        <div class="botones-container">
-                            <button class="btn btn-success" onclick="aprobarSolicitud(1)"><i class="fa-solid fa-check"></i></button>
-                            <button class="btn btn-danger" onclick="eliminarSolicitud(1)"><i class="fa-solid fa-x"></i></button>
-                        </div>
-                    </div>
-                </div>
+            
+            <?php
 
+                    include_once '../bd/conexion.php';
+
+                    $objConexion = new Conexion();
+                    $conexion = $objConexion->conectar();
+
+                    $search = "SELECT * FROM conductor WHERE usuario_id = '$id_usuario'";
+                    $result = $conexion->query($search);
+                    $row = $result->fetch_assoc();
+                    $id_conductor = $row['id_conductor'];
+
+ 
+
+                    $query = "SELECT * FROM viaje WHERE id_conductor = '$id_conductor'";
+                    $resul = $conexion->query($query);
+               
+            
+                    while ($rew = $resul->fetch_assoc()) {
+
+                        $searchU = "SELECT * FROM pasajero WHERE pasajero_id = '".$rew['id_pasajero']."'";
+                        $resultU = $conexion->query($searchU);
+                        $rowU = $resultU->fetch_assoc();
+                        $id_pasajero = $rowU['usuario_id'];
+
+            
+                        $check = "SELECT * FROM usuario WHERE usuario_id = '".$id_pasajero."'";
+                        $res = $conexion->query($check);
+                        $row = $res->fetch_assoc();
+                        $nombre = $row['nombre'];
+                        $apellido_paterno = $row['apellido_p'];
+                        $apellido_materno = $row['apellido_m'];
+                        $matricula = $row['matricula'];
+
+                        echo "<div class='solicitud-container' id='solicitud-".$rew['viaje_id']."'>";
+                        echo "<div class='solicitud-content'>";
+                        echo "<ul>";
+                        echo "<li><b>Nombre:</b> ".$nombre."</li>";
+                        echo "<li><b>Apellido Paterno:</b> ".$apellido_paterno."</li>";
+                        echo "<li><b>Apellido Materno:</b> ".$apellido_materno."</li>";
+                        echo "<li><b>Matrícula:</b> ".$matricula."</li>";
+                        echo "</ul>";
+                        echo "<div class='botones-container'>";
+                        if($rew['estado'] == 0){
+                            echo "<a href='crud/aceptarSoli.php?viaje=".$rew['id_viaje']."' class='btn btn-success'><i class='fa-solid fa-check'></i></a>";
+                            echo "<button class='btn btn-danger' onclick='eliminarSolicitud(1)'><i class='fa-solid fa-x'></i></button>";
+                        } else {
+                            echo "aceptado";
+                            echo "<button class='btn btn-danger' onclick='eliminarSolicitud(1)'><i class='fa-solid fa-x'></i></button>";
+                        }
+                        
+                        echo "</div>";
+                        echo "</div>";
+                        echo "</div>";
+
+                    }
+
+                ?>
              
 
             </div>

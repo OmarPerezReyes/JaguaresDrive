@@ -1,3 +1,58 @@
+<?php
+
+session_start();
+$usuarioId = $_SESSION['usuario_id'];
+$usuarioId = $_GET['id_usuario'];
+
+?>
+
+
+<?php
+
+include_once '../bd/conexion.php';
+
+$objConexion = new Conexion();
+$conexion = $objConexion->conectar();
+
+$query = "SELECT * FROM pasajero WHERE usuario_id = '$usuarioId'";
+$result = $conexion->query($query);
+$row = $result->fetch_assoc();
+$id_pasajero = $row['pasajero_id'];
+
+
+$query = "SELECT * FROM viaje WHERE id_pasajero = '$id_pasajero'";
+$result = $conexion->query($query);
+$row = $result->fetch_assoc();
+$id_conductor = $row['id_conductor'];
+
+
+$query = "SELECT * FROM conductor WHERE id_conductor = '$id_conductor'";
+$result = $conexion->query($query);
+$row = $result->fetch_assoc();
+$id_usuarioConductor = $row['usuario_id'];
+$id_vehiculo = $row['ID_vehiculo'];
+
+
+$query = "SELECT * FROM usuario WHERE usuario_id = '$id_usuarioConductor'";
+$result = $conexion->query($query);
+$row = $result->fetch_assoc();
+$nombreConductor = $row['nombre']." ".$row['apellido_p']." ".$row['apellido_m'];
+$telefono = $row['telefono'];
+$carrera = $row['carrera'];
+$foto = $row['foto'];   
+
+$query = "SELECT * FROM vehiculo WHERE ID_vehiculo = '$id_vehiculo'";
+$result = $conexion->query($query);
+$row = $result->fetch_assoc();
+$marca = $row['Marca'];
+$modelo = $row['Modelo'];
+$color = $row['Color'];
+$placas = $row['Placas'];
+
+
+
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -96,7 +151,7 @@
         <div class="avatar-container">
             <img src="img\icono-usuario.png" alt="Avatar" class="avatar-img">
         </div>
-        <label for="matricula" style="display: block; text-align: center;" class="white-text"><b>2130155</b></label>
+        <label for="matricula" style="display: block; text-align: center;" class="white-text"><b></b></label>
 
         <nav class="menu">
         <a href="pasajero.php" class="menu-item"><i class="fas fa-location-dot"></i> Viajes disponibles</a>
@@ -113,26 +168,25 @@
                 <label for="descripcion-viaje" style="font-weight: bold;">Información del Conductor</label>
                 <div style="display: flex; align-items: center;">
                     <div class="avatar-container" style="width: 50px; height: 50px; margin-right: 10px;">
-                        <img src="img\logo.png" alt="Foto de perfil" class="avatar-img">
+                        <img src="fotos_perfil/<?php echo $foto; ?>" alt="Foto de perfil" class="avatar-img">
                     </div>
                     <div style="flex-grow: 1;"> <!-- Esto permite que el nombre de usuario ocupe todo el espacio disponible -->
-                        <label for="name_usuario" style="margin: 0; text-align: right;">Daniel Armando Ledezma Donjuan</label>
+                        <label for="name_usuario" style="margin: 0; text-align: right;"><?php echo $nombreConductor; ?></label>
                     </div>
                 </div>
                 <div style="display: flex; justify-content: space-between;">
                     <div>
-                        <label for="hora" style="margin-right: 150px; color: gray;">Número de teléfono: 834-123-4567</label>
-                        <label for="hora" style="margin-right: 150px; color: gray;">Carrera: ISA</label>
-                        <label for="hora" style="margin-right: auto; color: gray;">Edad: 22</label>
+                        <label for="hora" style="margin-right: 150px; color: gray;">Número de teléfono:<?php echo $telefono; ?></label>
+                        <label for="hora" style="margin-right: 150px; color: gray;">Carrera: <?php echo $carrera; ?></label>
                     </div>
                 </div>
                 <label for="descripcion-viaje" style="font-weight: bold;">Informacion del carro</label><!-- Etiqueta para la descripción del viaje -->
                 <div style="display: flex; justify-content: space-between;">
                     <div>
-                        <label for="hora" style="margin-right: 40px; color: gray;">Marca del carro: Chevrolet</label>
-                        <label for="hora" style="margin-right: 40px; color: gray;">Modelo del auto: Malibu</label>
-                        <label for="hora" style="margin-right: 40px; color: gray;">Color del carro: Negro</label>
-                        <label for="hora" style="margin-right: 40px; color: gray;">Placas: AFSSDCSFAF</label>
+                        <label for="hora" style="margin-right: 40px; color: gray;">Marca del carro: <?php echo $marca;?></label>
+                        <label for="hora" style="margin-right: 40px; color: gray;">Modelo del auto: <?php echo $modelo;?></label>
+                        <label for="hora" style="margin-right: 40px; color: gray;">Color del carro: <?php echo $color;?></label>
+                        <label for="hora" style="margin-right: 40px; color: gray;">Placas: <?php echo $placas;?></label>
                     </div>
                 </div>
                 <div style="display: flex; justify-content: space-between;">
@@ -140,16 +194,7 @@
                         
                     </div>
                 </div>
-                <label for="descripcion-viaje" style="font-weight: bold;">Informacion de la ruta</label>
-                <div style="display: flex; justify-content: space-between;">
-                    <div>
-                        <label for="hora" style="margin-right: 150px; color: gray;">Cantidad de pasajeros: 3 </label>
-                        <label for="hora" style="margin-right: 150px; color: gray;">Punto de encuentro: Frente a la gasolinera del cuerudo</label>
-                    </div>
-                </div>
-                <div>
-                    <label for="hora" style="margin-right: auto; color: gray;">Hora de llegada a la universidad: 6:38</label>
-                </div>
+            
             </div>
             
         </div>

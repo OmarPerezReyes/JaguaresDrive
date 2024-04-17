@@ -151,6 +151,7 @@ $carrera = $usuario->getCarrera();
         <div class="menu">
             <label for="matricula" style="display: block; text-align: center;" class="white-text"><b><?php echo $matricula?></b></label>
             <a href="conductor.php" class="menu-item"><i class="fas fa-location-dot"></i> Rutas</a>
+            <a href="solicitudes.php?id_usuario=<?php echo $usuarioId; ?>" class="menu-item"><i class="fa-solid fa-car"></i> Solicitudes</a>
             <a href="editar_conductor.php" class="menu-item"><i class="fa-solid fa-gear"></i> Perfil</a>
             <a href="index.php" class="menu-item" onclick="confirmarCerrarSesion(event)"><i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión</a>
         </div>
