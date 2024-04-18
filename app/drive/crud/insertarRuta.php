@@ -22,6 +22,9 @@ if(isset($_POST['insertar_ruta'])){
     echo $sql;
     $result = $conexion->query($sql);
 
+    if($result){
+        header("Location: ../../drive/conductor.php");
+    }
 }
 
 ?>

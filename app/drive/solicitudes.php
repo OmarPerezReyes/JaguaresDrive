@@ -271,7 +271,7 @@ $id_usuario = $_GET['id_usuario'];
             }).then((result) => {
                 if (result.isConfirmed) {
                     // Redirige al usuario a la página de inicio de sesión (login.html)
-                    window.location.href = "index.html";
+                    window.location.href = "index.php";
                 }
             });
         }

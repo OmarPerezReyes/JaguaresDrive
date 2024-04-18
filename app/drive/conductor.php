@@ -71,7 +71,12 @@ if ($result->num_rows > 0) {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC9TPtQVo1d15jPaORSaA082SlBqiv_f8s&libraries=places"></script>
     <script src="../controllers/mapa.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC9TPtQVo1d15jPaORSaA082SlBqiv_f8s&callback=iniciarMap"></script>
+    <script>
+    window.onload = function() {
+        initAutocomplete();
+    };
+</script>
+   
     <link rel="stylesheet" href="css/diseño_conductor.css">
     <!-- Enlace al icono para la pestaña -->
     <link rel="icon" href="img/logo.png" type="image/x-icon">
@@ -184,7 +189,7 @@ if ($result->num_rows > 0) {
                 <div class="input-group mb-3">
                     <!-- Icono -->
                     <span class="input-group-text"><i class="fas fa-location-dot"></i></span>
-                    <input name="input0" type="text" class="form-control" placeholder="Buscar punto de partida" aria-label="Buscar punto de partida" aria-describedby="button-buscar">
+                    <input name="partida" id="partida" type="text" class="autocomplete-input form-control" placeholder="Buscar punto de partida" aria-label="Buscar punto de partida" aria-describedby="button-buscar">
     
                 </div>
             </div>
@@ -193,21 +198,20 @@ if ($result->num_rows > 0) {
                 <div class="form-group">
                     <div class="input-group mb-3">
                         <span class="input-group-text"><i class="fa-solid fa-location-pin"></i></span>
-                        <input type="text" class="form-control" placeholder="Buscar paradas" name="input1" aria-label="Buscar paradas" aria-describedby="button-buscar-paradas">
+                        <input type="text" class="autocomplete-input form-control" placeholder="Buscar paradas" name="input1" id="input1" aria-label="Buscar paradas" aria-describedby="button-buscar-paradas">
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary btn-accion" type="button" id="button-agregar-parada" onclick="agregarPuntoParada()"><i class="fa-solid fa-plus"></i></button>
                             <button class="btn btn-outline-secondary btn-accion" type="button" id="button-eliminar-parada" onclick="eliminarPuntoParada()"><i class="fa-solid fa-minus"></i></button>
                         </div>
-                       
                     </div>
-                   
                 </div>
-                
             </div>
             <div id="map-container">
-            <button class="btn btn-outline-secondary btn-accion" type="button" id="button-agregar-parada" onclick="convertirDireccionADireccion()">Agregar a mapa</button>
-                <iframe src="../views/mapa.html" width="100%" height="500px" frameborder="0"></iframe>
+            <button class="btn btn-outline-secondary btn-accion" type="button" id="button-agregar-parada" onclick="convertirDireccionACoordenadas()">Agregar a mapa</button>
+               <div id="mapa" style="width: 100%; height: 400px;" ></div>
             </div>
+             <!-- División donde se mostrará el mapa -->
+
             <br>
             <div class="form-group">
                 <label for="costo" style="margin-right: 510px;"><b>Costo:</b></label>
@@ -220,8 +224,6 @@ if ($result->num_rows > 0) {
                 </div>
             </div>
             
-            
-            
             <div class="form-group">
                 <label for="descripcion"><b>Descripción:</b></label>
                 <textarea class="form-control" name="descripcion" id="descripcion" rows="3" placeholder="Ingrese la descripción"></textarea>
@@ -230,7 +232,17 @@ if ($result->num_rows > 0) {
         </div>
     </div>
     </form>
+
     <script>
+        function initAutocomplete() {
+            var inputs = document.querySelectorAll('.autocomplete-input');
+
+            // Itera sobre cada input y aplica el autocompletado de direcciones
+            inputs.forEach(function(input) {
+                var autocomplete = new google.maps.places.Autocomplete(input);
+            });
+        }
+        
         var cont = 1;
         function agregarPuntoParada() {
             cont++;
@@ -241,7 +253,7 @@ if ($result->num_rows > 0) {
                 <div class="input-group mb-3">
                     <!-- Icono -->
                     <span class="input-group-text"><i class="fa-solid fa-location-pin"></i></span>
-                    <input type="text" class="form-control" name="input`+ cont + `" placeholder="Buscar paradas" aria-label="Buscar paradas" aria-describedby="button-buscar-paradas">
+                    <input id="input`+ cont + `" name="input`+ cont + `" class="autocomplete-input form-control" placeholder="Buscar punto de partida" aria-label="Buscar punto de partida" aria-describedby="button-buscar">
                     <!-- Botones de acciones -->
                     <div class="input-group-append">
                         <!-- Botón de agregar -->
@@ -249,8 +261,10 @@ if ($result->num_rows > 0) {
                         <!-- Botón de eliminar -->
                         <button class="btn btn-outline-secondary btn-accion" type="button" onclick="eliminarPuntoParada()"><i class="fa-solid fa-minus"></i></button>
                     </div>
+                
                 </div>`;
             paradaContainer.appendChild(newFormGroup);
+            initAutocomplete();
         }
 
         function eliminarPuntoParada() {
@@ -259,27 +273,6 @@ if ($result->num_rows > 0) {
             if (formGroups.length > 1) { // Asegúrate de que haya al menos un elemento antes de eliminar
                 paradaContainer.removeChild(formGroups[formGroups.length - 1]); // Elimina el último elemento de la lista
             }
-        }
-
-        function confirmarInicioViaje(event) {
-            event.preventDefault(); // Evita el comportamiento predeterminado del evento
-
-            Swal.fire({
-                title: "¿Estás seguro de subir este viaje?",
-                icon: "NOTA: Todo los alumnos podran verlo y solicitarlo.",
-                showCancelButton: true,
-                confirmButtonColor: "purple",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "¡Sí!",
-                scrollbarPadding: false
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire({
-                        title: "Viaje confirmado!",
-                        icon: "success"
-                    });
-                }
-            });
         }
 
         function confirmarCerrarSesion(event) {
@@ -304,41 +297,127 @@ if ($result->num_rows > 0) {
     </script>
     <script>    
 
-function convertirDireccionADireccion() {
-    // Dirección a convertir
-    var cadenaOUT = "";
-
+function convertirDireccionACoordenadas() {
     var inputs = document.querySelectorAll('input[name^="input"]');
+    var start = document.getElementById('partida').value;
 
+    // Verificar si todos los inputs están vacíos
+    var todosVacios = true;
     inputs.forEach(function(input) {
-        var direccion = input.value;
-        // Crear un objeto Geocoder
-        var geocoder = new google.maps.Geocoder();
+        if (input.value.trim() !== '') {
+            todosVacios = false;
+        }
+    });
 
-        // Llamar a la función geocode con la dirección especificada
-        geocoder.geocode({ 'address': direccion }, function(results, status) {
-            if (status === google.maps.GeocoderStatus.OK) {
-                // Obtener las coordenadas de la dirección
-                var coordenadas = results[0].geometry.location;
+    // Si todos los inputs están vacíos, mostrar el mapa con una ubicación predeterminada
+    if (todosVacios) {
+        var mapOptions = {
+            center: { lat: 23.728058, lng: -99.077465 },
+            zoom: 12
+        };
 
-                // Mostrar las coordenadas en consola
-                console.log(coordenadas.lat() + ", " + coordenadas.lng() + "|");
-                cadenaOUT += coordenadas.lat().toString() + ", " + coordenadas.lng().toString() + "|";
+        var map = new google.maps.Map(document.getElementById('mapa'), mapOptions);
+        return;
+    }
 
-                // Asignar el valor a tu input oculto dentro de la función de retorno
-                document.getElementById("coordenadas2").value = cadenaOUT;
-                document.getElementsByName("coordenadas2")[0].value = cadenaOUT;
+    var geocoder = new google.maps.Geocoder();
+    var cadenaOUT = "";
+    var mapa;
+    var waypoints = [];
+
+    // Variable para contar cuántas solicitudes de geocodificación se han completado
+    var geocodeCounter = 0;
+
+    // Función de devolución de llamada para manejar los resultados de geocodificación
+    function geocodeCallback(results, status) {
+        if (status === google.maps.GeocoderStatus.OK) {
+            var coordenadas = results[0].geometry.location;
+
+            waypoints.push({
+                location: coordenadas,
+                stopover: true
+            });
+
+            cadenaOUT += coordenadas.lat().toString() + ", " + coordenadas.lng().toString() + "|";
+            document.getElementById("coordenadas2").value = cadenaOUT;
+            document.getElementsByName("coordenadas2")[0].value = cadenaOUT;
+
+            geocodeCounter++; // Incrementar el contador de solicitudes completadas
+
+            if (geocodeCounter === inputs.length) {
+                // Si todas las solicitudes se han completado, construir la ruta
+                construirRuta();
+            }
+        } else {
+            console.log("Error en geocodificación: " + status);
+        }
+    }
+
+    // Geocodificar la dirección de partida
+    geocoder.geocode({ 'address': start }, function(result, status) {
+        if (status === google.maps.GeocoderStatus.OK) {
+            start = result[0].geometry.location;
+            cadenaOUT += start.lat().toString() + ", " + start.lng().toString() + "|";
+        } else {
+            console.log("Error en geocodificación de partida: " + status);
+        }
+
+        // Iterar sobre cada dirección y realizar la geocodificación
+        inputs.forEach(function(input) {
+            var direccion = input.value;
+            if (direccion.trim() !== '') {
+                geocoder.geocode({ 'address': direccion }, geocodeCallback);
+            } else {
+                geocodeCounter++;
+                if (geocodeCounter === inputs.length) {
+                    // Si todas las solicitudes se han completado, construir la ruta
+                    construirRuta();
+                }
             }
         });
     });
 
-    // Ten en cuenta que aquí el valor aún no se ha asignado porque la función geocoder.geocode() es asíncrona
-    // Por lo tanto, no es necesario asignarlo aquí nuevamente
-    //document.getElementById("coordenadas2").value = cadenaOUT;
-    //document.getElementsByName("coordenadas2")[0].value = cadenaOUT;
+    // Función para construir la ruta una vez que se hayan completado todas las solicitudes de geocodificación
+    function construirRuta() {
+        var mapOptions = {
+            center: start,
+            zoom: 12
+        };
 
-    iniciarM(cadenaOUT);
+        var map = new google.maps.Map(document.getElementById('mapa'), mapOptions);
+
+        var directionsService = new google.maps.DirectionsService();
+        var directionsRenderer = new google.maps.DirectionsRenderer();
+        directionsRenderer.setMap(map);
+
+        var end = new google.maps.LatLng(23.729029, -99.077182);
+
+        var request = {
+            origin: start,
+            destination: end,
+            waypoints: waypoints,
+            travelMode: 'DRIVING'
+        };
+
+        directionsService.route(request, function(response, status) {
+            if (status === 'OK') {
+                directionsRenderer.setDirections(response);
+            } else {
+                window.alert('Error al mostrar las direcciones: ' + status);
+            }
+        });
+    }
 }
+
+
+            
+        
+
+
+
+            // Iniciar el mapa con las coordenadas obteni
+
+        convertirDireccionACoordenadas();
 
     </script>
 
