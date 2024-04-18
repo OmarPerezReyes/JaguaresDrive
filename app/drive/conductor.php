@@ -56,6 +56,22 @@ if ($result->num_rows > 0) {
     exit;
 }
 
+$buscarInfo = "SELECT * FROM conductor WHERE usuario_id = '$usuarioId'";
+$result = $conexion->query($buscarInfo);
+$fila = $result->fetch_assoc();
+$id_conductor = $fila['id_conductor'];
+
+$buscarRuta = "SELECT * FROM ruta WHERE id_conductor = '$id_conductor'";
+$result = $conexion->query($buscarRuta);
+$fila = $result->fetch_assoc();
+$coordenadas = $fila['puntos'];
+$costo = $fila['costo_viaje'];
+$hora = $fila['duracion'];
+$descripcion = $fila['descripcion'];
+
+
+
+
 ?>
 
 
@@ -145,6 +161,38 @@ if ($result->num_rows > 0) {
     </style>
 </head>
 
+<?php
+
+$coordenadas = explode("|", $coordenadas);
+$start = "";
+$primerInput = "";
+
+$coor = explode(",", $coordenadas[0]);
+
+$latitud = $coor[0];
+$longitud = $coor[1];
+
+// Clave de la API de Google Maps
+$apiKey = "AIzaSyC9TPtQVo1d15jPaORSaA082SlBqiv_f8s";
+
+// URL de la solicitud a la API de Geocodificación
+$url = "https://maps.googleapis.com/maps/api/geocode/json?latlng={$latitud},{$longitud}&key={$apiKey}";
+
+$context = stream_context_create([
+    'http' => [
+        'method' => 'GET',
+        'header' => 'Content-type: application/json\r\n'
+    ]
+]);
+$response = file_get_contents($url, false, $context);
+
+if ($response) {
+    $data = json_decode($response);
+    $start = $data->results[0]->formatted_address;
+}
+
+?>
+
 <body>
     <div id="preloader">
         <!-- Usar un ícono de Font Awesome de carro con animación -->
@@ -179,6 +227,10 @@ if ($result->num_rows > 0) {
     <div id="content">
         <!-- Añade aquí el contenido de tu página -->
         <h1>Bienvenid@ <?php echo $nombreUsuario; ?></h1> <!-- Aquí se mostrará el nombre de usuario -->
+
+        <br>
+        <a href="crud/eliminarRuta.php?id_usuario=<?php echo $usuarioId; ?>" class="btn btn-danger">Eliminar Ruta Creada Previamente</a>
+        <br>
         <br>
         <form if="formulario" method="POST" action="crud/insertarRuta.php">
         <input type="hidden" name="id_usuario" value="<?php echo $_SESSION['usuario_id']; ?>">
@@ -189,7 +241,7 @@ if ($result->num_rows > 0) {
                 <div class="input-group mb-3">
                     <!-- Icono -->
                     <span class="input-group-text"><i class="fas fa-location-dot"></i></span>
-                    <input name="partida" id="partida" type="text" class="autocomplete-input form-control" placeholder="Buscar punto de partida" aria-label="Buscar punto de partida" aria-describedby="button-buscar" required>
+                    <input name="partida" id="partida" value="<?php echo $start; ?>" type="text" class="autocomplete-input form-control" placeholder="Buscar punto de partida" aria-label="Buscar punto de partida" aria-describedby="button-buscar" required>
     
                 </div>
             </div>
@@ -198,7 +250,7 @@ if ($result->num_rows > 0) {
                 <div class="form-group">
                     <div class="input-group mb-3">
                         <span class="input-group-text"><i class="fa-solid fa-location-pin"></i></span>
-                        <input type="text" class="autocomplete-input form-control" placeholder="Buscar paradas" name="input1" id="input1" aria-label="Buscar paradas" aria-describedby="button-buscar-paradas" required>
+                        <input type="text" class="autocomplete-input form-control" placeholder="Buscar paradas" value="<?php echo $primerInput; ?>" name="input1" id="input1" aria-label="Buscar paradas" aria-describedby="button-buscar-paradas" required>
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary btn-accion" type="button" id="button-agregar-parada" onclick="agregarPuntoParada()"><i class="fa-solid fa-plus"></i></button>
                             <button class="btn btn-outline-secondary btn-accion" type="button" id="button-eliminar-parada" onclick="eliminarPuntoParada()"><i class="fa-solid fa-minus"></i></button>
@@ -217,17 +269,17 @@ if ($result->num_rows > 0) {
                 <div class="input-group">
                       <label for="costo" style="margin-right: 10px;"><b>Costo:</b></label>
                     <span class="input-group-text">$</span>
-                    <input type="number" class="form-control" name="costo" id="costo" placeholder="Ingrese el costo" aria-label="Ingrese el costo" aria-describedby="button-calcular" required>
+                    <input type="number" class="form-control" value="<?php echo $costo; ?>" name="costo" id="costo" placeholder="Ingrese el costo" aria-label="Ingrese el costo" aria-describedby="button-calcular" required>
                    
                     <label for="hora" style="margin-right: 10px;"><b>Hora de salida:</b></label>
                     <span class="input-group-text"><i class="fa-solid fa-clock"></i></span>
-                    <input type="time" class="form-control" name="hora" id="hora" aria-label="Ingrese la hora" aria-describedby="button-calcular" required>
+                    <input type="time" class="form-control" value="<?php echo $hora; ?>"; name="hora" id="hora" aria-label="Ingrese la hora" aria-describedby="button-calcular" required>
                 </div>
             </div>
             
             <div class="form-group">
                 <label for="descripcion"><b>Descripción:</b></label>
-                <textarea class="form-control" name="descripcion" id="descripcion" rows="3" placeholder="Ingrese la descripción" required></textarea>
+                <textarea class="form-control" name="descripcion" id="descripcion" rows="3" placeholder="Ingrese la descripción" required><?php echo $descripcion; ?></textarea>
             </div>
             <button type="submit" name="insertar_ruta" class="btn btn-primary" onclick="confirmarInicioViaje(event)" style="background-color: rgb(0, 0, 0); color: white;">Subir Viaje</button>
         </div>

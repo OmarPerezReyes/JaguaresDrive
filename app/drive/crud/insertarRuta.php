@@ -25,13 +25,19 @@ if(isset($_POST['insertar_ruta'])){
     $verificacion = "DELETE FROM ruta WHERE id_conductor = '$id_conductor'";
     $conexion->query($verificacion);
 
-    $sql = "INSERT INTO ruta (id_conductor, puntos, costo_viaje, duracion, descripcion, estado) VALUES ('$id_conductor', '$coordenadas', '$costo', '$hora', '$descripcion', 'Activo');";
-  
-    $result = $conexion->query($sql);
-    
-    if($result){
-        header("Location: ../../drive/conductor.php");
+    if($row['ID_vehiculo'] == null){
+        echo "<script>alert('No tienes un vehiculo registrado, por favor registra uno para poder publicar rutas');";
+        echo "window.location.href='../../drive/conductor.php';</script>";
+    } else {
+        $sql = "INSERT INTO ruta (id_conductor, puntos, costo_viaje, duracion, descripcion, estado) VALUES ('$id_conductor', '$coordenadas', '$costo', '$hora', '$descripcion', 'Activo');";
+        $result = $conexion->query($sql);
+        
+        if($result){
+            header("Location: ../../drive/conductor.php");
+        }
     }
+
+  
     
 }
 
