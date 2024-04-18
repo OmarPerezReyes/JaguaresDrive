@@ -64,13 +64,10 @@ $id_conductor = $fila['id_conductor'];
 $buscarRuta = "SELECT * FROM ruta WHERE id_conductor = '$id_conductor'";
 $result = $conexion->query($buscarRuta);
 $fila = $result->fetch_assoc();
-$coordenadas = $fila['puntos'];
+$coordenadas = $fila['direcciones'];
 $costo = $fila['costo_viaje'];
 $hora = $fila['duracion'];
 $descripcion = $fila['descripcion'];
-
-
-
 
 ?>
 
@@ -164,33 +161,7 @@ $descripcion = $fila['descripcion'];
 <?php
 
 $coordenadas = explode("|", $coordenadas);
-$start = "";
-$primerInput = "";
-
-$coor = explode(",", $coordenadas[0]);
-
-$latitud = $coor[0];
-$longitud = $coor[1];
-
-// Clave de la API de Google Maps
-$apiKey = "AIzaSyC9TPtQVo1d15jPaORSaA082SlBqiv_f8s";
-
-// URL de la solicitud a la API de Geocodificación
-$url = "https://maps.googleapis.com/maps/api/geocode/json?latlng={$latitud},{$longitud}&key={$apiKey}";
-
-$context = stream_context_create([
-    'http' => [
-        'method' => 'GET',
-        'header' => 'Content-type: application/json\r\n'
-    ]
-]);
-$response = file_get_contents($url, false, $context);
-
-if ($response) {
-    $data = json_decode($response);
-    $start = $data->results[0]->formatted_address;
-}
-
+ 
 ?>
 
 <body>
@@ -241,8 +212,7 @@ if ($response) {
                 <div class="input-group mb-3">
                     <!-- Icono -->
                     <span class="input-group-text"><i class="fas fa-location-dot"></i></span>
-                    <input name="partida" id="partida" value="<?php echo $start; ?>" type="text" class="autocomplete-input form-control" placeholder="Buscar punto de partida" aria-label="Buscar punto de partida" aria-describedby="button-buscar" required>
-    
+                    <input name="partida" id="partida" value="<?php echo $coordenadas[0]; ?>" type="text" class="autocomplete-input form-control" placeholder="Buscar punto de partida" aria-label="Buscar punto de partida" aria-describedby="button-buscar" required>
                 </div>
             </div>
             <label for="paradas"><b>Selecciona puntos de paradas:</b></label>
@@ -250,7 +220,7 @@ if ($response) {
                 <div class="form-group">
                     <div class="input-group mb-3">
                         <span class="input-group-text"><i class="fa-solid fa-location-pin"></i></span>
-                        <input type="text" class="autocomplete-input form-control" placeholder="Buscar paradas" value="<?php echo $primerInput; ?>" name="input1" id="input1" aria-label="Buscar paradas" aria-describedby="button-buscar-paradas" required>
+                        <input type="text" class="autocomplete-input form-control" placeholder="Buscar paradas" value="<?php echo $coordenadas[1]; ?>" name="input1" id="input1" aria-label="Buscar paradas" aria-describedby="button-buscar-paradas" required>
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary btn-accion" type="button" id="button-agregar-parada" onclick="agregarPuntoParada()"><i class="fa-solid fa-plus"></i></button>
                             <button class="btn btn-outline-secondary btn-accion" type="button" id="button-eliminar-parada" onclick="eliminarPuntoParada()"><i class="fa-solid fa-minus"></i></button>
@@ -287,6 +257,13 @@ if ($response) {
     </form>
 
     <script>
+
+        <?php
+        for($i = 2; $i < count($coordenadas); $i++){
+            echo 'agregarPuntoParada("'.$coordenadas[$i].'", "'.$i.'");';
+        }  
+        ?>
+
         function initAutocomplete() {
             var inputs = document.querySelectorAll('.autocomplete-input');
 
@@ -297,16 +274,22 @@ if ($response) {
         }
         
         var cont = 1;
-        function agregarPuntoParada() {
+        function agregarPuntoParada(value, cant) {
+            if(cant == null){
+                cant = cont;
+            }
+            if(value == null){
+                value = "";
+            }
             cont++;
-            var paradaContainer = document.getElementById('paradas-container');
-            var newFormGroup = document.createElement('div');
-            newFormGroup.classList.add('form-group');
+            var paradaContainer = document.getElementById("paradas-container");
+            var newFormGroup = document.createElement("div");
+            newFormGroup.classList.add("form-group");
             newFormGroup.innerHTML = `
                 <div class="input-group mb-3">
                     <!-- Icono -->
                     <span class="input-group-text"><i class="fa-solid fa-location-pin"></i></span>
-                    <input id="input`+ cont + `" name="input`+ cont + `" class="autocomplete-input form-control" placeholder="Buscar punto de partida" aria-label="Buscar punto de partida" aria-describedby="button-buscar" req>
+                    <input id="input`+ cant + `" name="input`+ cant + `" value="`+ value + `" class="autocomplete-input form-control" placeholder="Buscar punto de partida" aria-label="Buscar punto de partida" aria-describedby="button-buscar" req>
                     <!-- Botones de acciones -->
                     <div class="input-group-append">
                         <!-- Botón de agregar -->
@@ -314,7 +297,6 @@ if ($response) {
                         <!-- Botón de eliminar -->
                         <button class="btn btn-outline-secondary btn-accion" type="button" onclick="eliminarPuntoParada()"><i class="fa-solid fa-minus"></i></button>
                     </div>
-                
                 </div>`;
             paradaContainer.appendChild(newFormGroup);
             initAutocomplete();

@@ -7,6 +7,18 @@ $conexion = $objConexion->conectar();
 
 if(isset($_POST['insertar_ruta'])){
 
+    $start = $_POST['partida'];
+
+    $direcciones = $start." | ";
+
+    // Iterar sobre los inputs
+    $i = 1;
+    while (isset($_POST["input{$i}"])) {
+        $input = trim($_POST["input{$i}"]);
+        $direcciones .= $_POST["input{$i}"]."|";
+        $i++;
+    }
+
     $id_conductor = $_POST['id_usuario'];
     $coordenadas = $_POST['coordenadas2'];
     $costo = $_POST['costo'];
@@ -29,11 +41,12 @@ if(isset($_POST['insertar_ruta'])){
         echo "<script>alert('No tienes un vehiculo registrado, por favor registra uno para poder publicar rutas');";
         echo "window.location.href='../../drive/conductor.php';</script>";
     } else {
-        $sql = "INSERT INTO ruta (id_conductor, puntos, costo_viaje, duracion, descripcion, estado) VALUES ('$id_conductor', '$coordenadas', '$costo', '$hora', '$descripcion', 'Activo');";
+        $sql = "INSERT INTO ruta (id_conductor, puntos, direcciones, costo_viaje, duracion, descripcion, estado) VALUES ('$id_conductor', '$coordenadas', '$direcciones', '$costo', '$hora', '$descripcion', 'Activo');";
+        echo $sql;
         $result = $conexion->query($sql);
         
         if($result){
-            header("Location: ../../drive/conductor.php");
+           header("Location: ../../drive/conductor.php");
         }
     }
 
