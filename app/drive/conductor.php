@@ -178,9 +178,9 @@ if ($result->num_rows > 0) {
     <!-- Resto del contenido HTML -->
     <div id="content">
         <!-- Añade aquí el contenido de tu página -->
-        <h1>Bienvenido <?php echo $nombreUsuario; ?></h1> <!-- Aquí se mostrará el nombre de usuario -->
+        <h1>Bienvenid@ <?php echo $nombreUsuario; ?></h1> <!-- Aquí se mostrará el nombre de usuario -->
         <br>
-        <form method="POST" action="crud/insertarRuta.php">
+        <form if="formulario" method="POST" action="crud/insertarRuta.php">
         <input type="hidden" name="id_usuario" value="<?php echo $_SESSION['usuario_id']; ?>">
         <input type="hidden" id="coordenadas2" name="coordenadas2" value="">
         <div class="container-content">
@@ -189,7 +189,7 @@ if ($result->num_rows > 0) {
                 <div class="input-group mb-3">
                     <!-- Icono -->
                     <span class="input-group-text"><i class="fas fa-location-dot"></i></span>
-                    <input name="partida" id="partida" type="text" class="autocomplete-input form-control" placeholder="Buscar punto de partida" aria-label="Buscar punto de partida" aria-describedby="button-buscar">
+                    <input name="partida" id="partida" type="text" class="autocomplete-input form-control" placeholder="Buscar punto de partida" aria-label="Buscar punto de partida" aria-describedby="button-buscar" required>
     
                 </div>
             </div>
@@ -198,7 +198,7 @@ if ($result->num_rows > 0) {
                 <div class="form-group">
                     <div class="input-group mb-3">
                         <span class="input-group-text"><i class="fa-solid fa-location-pin"></i></span>
-                        <input type="text" class="autocomplete-input form-control" placeholder="Buscar paradas" name="input1" id="input1" aria-label="Buscar paradas" aria-describedby="button-buscar-paradas">
+                        <input type="text" class="autocomplete-input form-control" placeholder="Buscar paradas" name="input1" id="input1" aria-label="Buscar paradas" aria-describedby="button-buscar-paradas" required>
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary btn-accion" type="button" id="button-agregar-parada" onclick="agregarPuntoParada()"><i class="fa-solid fa-plus"></i></button>
                             <button class="btn btn-outline-secondary btn-accion" type="button" id="button-eliminar-parada" onclick="eliminarPuntoParada()"><i class="fa-solid fa-minus"></i></button>
@@ -212,23 +212,24 @@ if ($result->num_rows > 0) {
             </div>
              <!-- División donde se mostrará el mapa -->
 
-            <br>
             <div class="form-group">
-                <label for="costo" style="margin-right: 510px;"><b>Costo:</b></label>
-                <label for="hora" style="margin-right: 510px;"><b>Hora de salida:</b></label>
+                           
                 <div class="input-group">
+                      <label for="costo" style="margin-right: 10px;"><b>Costo:</b></label>
                     <span class="input-group-text">$</span>
-                    <input type="number" class="form-control" name="costo" id="costo" placeholder="Ingrese el costo" aria-label="Ingrese el costo" aria-describedby="button-calcular">
+                    <input type="number" class="form-control" name="costo" id="costo" placeholder="Ingrese el costo" aria-label="Ingrese el costo" aria-describedby="button-calcular" required>
+                   
+                    <label for="hora" style="margin-right: 10px;"><b>Hora de salida:</b></label>
                     <span class="input-group-text"><i class="fa-solid fa-clock"></i></span>
-                    <input type="time" class="form-control" name="hora" id="hora" aria-label="Ingrese la hora" aria-describedby="button-calcular">
+                    <input type="time" class="form-control" name="hora" id="hora" aria-label="Ingrese la hora" aria-describedby="button-calcular" required>
                 </div>
             </div>
             
             <div class="form-group">
                 <label for="descripcion"><b>Descripción:</b></label>
-                <textarea class="form-control" name="descripcion" id="descripcion" rows="3" placeholder="Ingrese la descripción"></textarea>
+                <textarea class="form-control" name="descripcion" id="descripcion" rows="3" placeholder="Ingrese la descripción" required></textarea>
             </div>
-            <button type="submit" name="insertar_ruta" class="btn btn-primary" style="background-color: rgb(0, 0, 0); color: white;">Subir Viaje</button>
+            <button type="submit" name="insertar_ruta" class="btn btn-primary" onclick="confirmarInicioViaje(event)" style="background-color: rgb(0, 0, 0); color: white;">Subir Viaje</button>
         </div>
     </div>
     </form>
@@ -253,7 +254,7 @@ if ($result->num_rows > 0) {
                 <div class="input-group mb-3">
                     <!-- Icono -->
                     <span class="input-group-text"><i class="fa-solid fa-location-pin"></i></span>
-                    <input id="input`+ cont + `" name="input`+ cont + `" class="autocomplete-input form-control" placeholder="Buscar punto de partida" aria-label="Buscar punto de partida" aria-describedby="button-buscar">
+                    <input id="input`+ cont + `" name="input`+ cont + `" class="autocomplete-input form-control" placeholder="Buscar punto de partida" aria-label="Buscar punto de partida" aria-describedby="button-buscar" req>
                     <!-- Botones de acciones -->
                     <div class="input-group-append">
                         <!-- Botón de agregar -->
@@ -274,6 +275,7 @@ if ($result->num_rows > 0) {
                 paradaContainer.removeChild(formGroups[formGroups.length - 1]); // Elimina el último elemento de la lista
             }
         }
+
 
         function confirmarCerrarSesion(event) {
             event.preventDefault(); // Evita el comportamiento predeterminado del evento

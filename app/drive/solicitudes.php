@@ -222,14 +222,15 @@ $id_usuario = $_GET['id_usuario'];
                         echo "<li><b>Apellido Paterno:</b> ".$apellido_paterno."</li>";
                         echo "<li><b>Apellido Materno:</b> ".$apellido_materno."</li>";
                         echo "<li><b>Matrícula:</b> ".$matricula."</li>";
+                        echo "<li><b>Punto de encuentro:</b> ".$rew['punto_encuentro']."</li>";
+                        echo "<li><b>Hora de salida:</b> ".$rew['hora_viaje']."</li>";
                         echo "</ul>";
                         echo "<div class='botones-container'>";
                         if($rew['estado'] == 0){
-                            echo "<a href='crud/aceptarSoli.php?viaje=".$rew['id_viaje']."' class='btn btn-success'><i class='fa-solid fa-check'></i></a>";
-                            echo "<button class='btn btn-danger' onclick='eliminarSolicitud(1)'><i class='fa-solid fa-x'></i></button>";
+                            echo "<a href='crud/aceptarSoli.php?viaje=".$rew['id_viaje']."&id_usuario=".$id_usuario."' class='btn btn-success'><i class='fa-solid fa-check'></i></a>";
+                            echo "<a href='crud/negarSoli.php?viaje=".$rew['id_viaje']."&id_usuario=".$id_usuario."' class='btn btn-danger'><i class='fa-solid fa-x'></i></a>";
                         } else {
                             echo "aceptado";
-                            echo "<button class='btn btn-danger' onclick='eliminarSolicitud(1)'><i class='fa-solid fa-x'></i></button>";
                         }
                         
                         echo "</div>";

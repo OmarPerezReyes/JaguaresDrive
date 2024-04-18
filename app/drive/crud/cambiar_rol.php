@@ -28,6 +28,16 @@ if(isset($_POST['rol_pasajero'])) {
         $statement_insert_conductor->bind_param("i", $id_usuario);
         $statement_insert_conductor->execute();
     }
+
+    $check = "SELECT * FROM pasajero WHERE usuario_id='$id_usuario'";
+    $result = mysqli_query($conexion, $check);
+    $row = mysqli_fetch_assoc($result);
+    $id_pasajero = $row['pasajero_id'];
+
+    $check = "DELETE FROM viaje WHERE id_pasajero='$id_pasajero'";
+    $result = mysqli_query($conexion, $check);
+
+
     // Redireccionar a alguna página después de la actualización
     header("Location: ../index.php");
 }
@@ -55,6 +65,17 @@ if(isset($_POST['rol_conductor'])) {
         $statement_insert_pasajero->bind_param("i", $id_usuario);
         $statement_insert_pasajero->execute();
     }
+
+    $check = "SELECT * FROM conductor WHERE usuario_id='$id_usuario'";
+    $result = mysqli_query($conexion, $check);
+    $row = mysqli_fetch_assoc($result);
+    $id_conductor = $row['id_conductor'];
+
+    $sql = "DELETE FROM viaje WHERE id_conductor='$id_conductor'";
+    $result = mysqli_query($conexion, $sql);
+
+    $sql = "DELETE FROM ruta WHERE id_conductor='$id_conductor'";
+    $result = mysqli_query($conexion, $sql);
     
     // Redireccionar a alguna página después de la actualización
     header("Location: ../index.php");

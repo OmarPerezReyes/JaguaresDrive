@@ -1,9 +1,12 @@
 <?php
 
 
-if(isset($_GET['id_us']) && isset($_GET['ruta'])){
-    $id_us = $_GET['id_us'];
-    $id_ruta = $_GET['ruta'];
+if(isset($_POST['solicitar'])){
+    $id_us = $_POST['id_us'];
+    $id_viaje = $id_us;
+    $id_ruta = $_POST['ruta'];
+    $punto_encuentro = $_POST['punto_encuentro'];
+    $hora_viaje = $_POST['hora'];
 
     include_once '../../bd/conexion.php';
 
@@ -20,11 +23,14 @@ if(isset($_GET['id_us']) && isset($_GET['ruta'])){
     $row = $result->fetch_assoc();
     $id_us = $row['pasajero_id'];
 
-    $sql = "INSERT INTO viaje (id_pasajero, id_ruta, id_conductor,  estado) VALUES ('$id_us', '$id_ruta', '$id_conductor', '0');";
+    $eliminar = "DELETE FROM viaje WHERE id_pasajero = '$id_us'";
+    $conexion->query($eliminar);
+
+    $sql = "INSERT INTO viaje (id_pasajero, id_ruta, id_conductor, punto_encuentro, hora_viaje, estado) VALUES ('$id_us', '$id_ruta', '$id_conductor', '$punto_encuentro', '$hora_viaje','0');";
     $result = $conexion->query($sql);
 
     if($result){
-        header("Location: ../../drive/pasajero.php");
+       header("Location: ../../drive/viaje.php?id_usuario=$id_viaje");
     }else{
         echo $sql;
         echo "Error al solicitar la ruta";

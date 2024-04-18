@@ -160,7 +160,7 @@ if ($result->num_rows > 0) {
     <!-- Resto del contenido HTML -->
     <div id="content">
         <!-- Añade aquí el contenido de tu página -->
-        <h1>Bienvenido <?= $nombreUsuario ?></h1>
+        <h1>Bienvenid@ <?= $nombreUsuario ?></h1>
         <br>
         <div class="container-content">
             <?php
@@ -173,15 +173,47 @@ if ($result->num_rows > 0) {
                 // Loop through each row of the result set
                 while ($row = $result->fetch_assoc()) {
                     $cont++;
+
+                    $check = "SELECT * FROM conductor WHERE id_conductor = " . $row['id_conductor'];
+                    $result2 = $conexion->query($check);
+                    $row2 = $result2->fetch_assoc();
+
+                    $check = "SELECT * FROM usuario WHERE usuario_id = " . $row2['usuario_id'];
+                    $result3 = $conexion->query($check);
+                    $row3 = $result3->fetch_assoc();
+
+                    echo "<p><b>Conductor:</b> " . $row3['nombre'] . " " . $row3['apellido_p'] . " " . $row3['apellido_m'] . "</p>";
+
+                    $check = "SELECT * FROM vehiculo WHERE ID_vehiculo = " . $row2['ID_vehiculo'];
+                    $result4 = $conexion->query($check);
+                    $row4 = $result4->fetch_assoc();
+
+                    echo "<p><b>Vehículo:</b> " . $row4['Marca'] . " " . $row4['Modelo'] . " " . $row4['Color'] . " " . $row4['Placas'] . "</p>";
+
                     // Display the route information
                     echo "<p>Route ID: " . $row['id_ruta'] . "</p>";
-                    echo "<p>Descripción: " . $row['descripcion'] . "</p>";
+                    echo "<p><b>Descripción:</b> " . $row['descripcion'] . "</p>";
+                    echo "<p><b>Costo: </b> $" . $row['costo_viaje'] . " | <b> Hora de Salida: </b>" . $row['duracion'] . " </p>";
+      
                     echo " <div id='mapa".$cont."' style='width: 100%; height: 400px;'></div>";
                     echo "<br>";
-                   echo "<a href='crud/solicitar_ruta.php?ruta=".$row['id_ruta']."&id_us=".$usuarioId."'>Solicitar</a>";
+                    echo '<form method="POST" action="crud/solicitar_ruta.php">
+                    <input type="hidden" name="ruta" value="'.$row['id_ruta'].'">
+                    <input type="hidden" name="id_us" value="'.$usuarioId.'">
+                    <input type="hidden" name="hora" value="'.$row['duracion'].'">
+           
+                    <div class="form-row">
+                        <label class="input-container" style="display: flex; align-items: center;">
+                            <input type="text" class="form-control" placeholder="Punto de Encuentro.." name="punto_encuentro" id="punto_encuentro" width="50%" required>
+                            <input type="submit" value="Solicitar" name="solicitar" class="btn btn-success" style="margin-left: 10px;">
+                        </label>
+                    </div>
+                    
+                    </form>';
+                  
                     echo "<hr>";
                     echo "<script>
-                    function iniciarMap() {
+                    function iniciarMap".$cont."() {
                         // Configura el mapa
                         var mapOptions = {
                             center: { lat: 23.728058, lng: -99.077465 },
@@ -231,7 +263,7 @@ if ($result->num_rows > 0) {
                             }
                         });
                       }
-                      iniciarMap();
+                      iniciarMap".$cont."();
                     </script>";
                 }
             } else {

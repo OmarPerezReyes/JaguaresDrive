@@ -11,7 +11,7 @@ if(isset($_GET['viaje'])){
     $objConexion = new Conexion();
     $conexion = $objConexion->conectar();
 
-    $sql = "UPDATE viaje SET estado = '1' WHERE id_viaje = '$id_viaje'";
+    $sql = "DELETE FROM viaje WHERE id_viaje = '$id_viaje'";
     $result = $conexion->query($sql);
 
     if($result){

@@ -6,7 +6,6 @@ $usuarioId = $_GET['id_usuario'];
 
 ?>
 
-
 <?php
 
 include_once '../bd/conexion.php';
@@ -22,8 +21,8 @@ $id_pasajero = $row['pasajero_id'];
 
 $query = "SELECT * FROM viaje WHERE id_pasajero = '$id_pasajero'";
 $result = $conexion->query($query);
-$row = $result->fetch_assoc();
-$id_conductor = $row['id_conductor'];
+$viaje = $result->fetch_assoc();
+$id_conductor = $viaje['id_conductor'];
 
 
 $query = "SELECT * FROM conductor WHERE id_conductor = '$id_conductor'";
@@ -49,9 +48,8 @@ $modelo = $row['Modelo'];
 $color = $row['Color'];
 $placas = $row['Placas'];
 
-
-
 ?>
+
 
 <!DOCTYPE html>
 <html lang="es">
@@ -163,7 +161,15 @@ $placas = $row['Placas'];
 
     <div id="content">
         <div class="container-content">
-            <h2><i class="fa-solid fa-check"></i> Viaje Aceptado</h2>
+            <h2><i class="fa-solid fa-check"></i> Viaje <?php
+            
+                if($viaje['estado'] == 0){
+                    echo "en espera de confirmación..";
+                } else {
+                    echo "Aceptado!";
+                }
+            
+            ?></h2>
             <div class="inner-container d-flex flex-column" style="position: relative;">
                 <label for="descripcion-viaje" style="font-weight: bold;">Información del Conductor</label>
                 <div style="display: flex; align-items: center;">
@@ -177,7 +183,9 @@ $placas = $row['Placas'];
                 <div style="display: flex; justify-content: space-between;">
                     <div>
                         <label for="hora" style="margin-right: 150px; color: gray;">Número de teléfono:<?php echo $telefono; ?></label>
-                        <label for="hora" style="margin-right: 150px; color: gray;">Carrera: <?php echo $carrera; ?></label>
+                        <label for="hora" style="margin-right: 150px; color: gray;">Punto de encuentro: <?php echo $viaje['punto_encuentro']; ?></label>
+                        <label for="hora" style="margin-right: 150px; color: gray;">Hora de Salida: <?php echo $viaje['hora_viaje']; ?></label>
+                        
                     </div>
                 </div>
                 <label for="descripcion-viaje" style="font-weight: bold;">Informacion del carro</label><!-- Etiqueta para la descripción del viaje -->
