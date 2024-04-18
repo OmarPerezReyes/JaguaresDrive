@@ -65,6 +65,7 @@ if ($result->num_rows > 0) {
     <link rel="icon" href="public/images/logo-jaguares-drive.png" type="image/png" sizes="512x512">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC9TPtQVo1d15jPaORSaA082SlBqiv_f8s&libraries=places"></script>
     <link rel="stylesheet" href="css/diseño_pasajero.css">
     <!-- Enlace al icono para la pestaña -->
     <link rel="icon" href="img/logo.png" type="image/x-icon">
@@ -166,15 +167,72 @@ if ($result->num_rows > 0) {
             // Query to fetch all routes from the "rutas" table
             $sql = "SELECT * FROM ruta";
             $result = $conexion->query($sql);
+            $cont = 0;
 
             if ($result->num_rows > 0) {
                 // Loop through each row of the result set
                 while ($row = $result->fetch_assoc()) {
+                    $cont++;
                     // Display the route information
                     echo "<p>Route ID: " . $row['id_ruta'] . "</p>";
                     echo "<p>Descripción: " . $row['descripcion'] . "</p>";
+                    echo " <div id='mapa".$cont."' style='width: 100%; height: 400px;'></div>";
+                    echo "<br>";
                    echo "<a href='crud/solicitar_ruta.php?ruta=".$row['id_ruta']."&id_us=".$usuarioId."'>Solicitar</a>";
                     echo "<hr>";
+                    echo "<script>
+                    function iniciarMap() {
+                        // Configura el mapa
+                        var mapOptions = {
+                            center: { lat: 23.728058, lng: -99.077465 },
+                            zoom: 12, 
+                        };
+                      
+                        // Crea el mapa
+                        var map = new google.maps.Map(document.getElementById('mapa".$cont."'), mapOptions);
+                      
+                        // Configura la solicitud de direcciones
+                        var directionsService = new google.maps.DirectionsService();
+                        var directionsRenderer = new google.maps.DirectionsRenderer();
+                        directionsRenderer.setMap(map);
+                    
+                        // Define los puntos de inicio y fin y los puntos intermedios (waypoints)";
+
+                        $cadena = $row['puntos'];
+                        $puntos = explode("|", $cadena);
+
+                        echo "
+                        var start = new google.maps.LatLng(".$puntos[0]."); // Ubicación de inicio
+                        var end = new google.maps.LatLng(23.729029, -99.077182); // Ubicación de fin
+                        var waypoints = [];
+                        ";
+
+                        for ($i = 1; $i < count($puntos) - 1; $i++) {
+                            echo "waypoints.push({
+                                location: new google.maps.LatLng(".$puntos[$i]."),
+                                stopover: true
+                            });";
+                        }
+                        echo "
+                        // Configura la solicitud de ruta
+                        var request = {
+                            origin: start,
+                            destination: end,
+                            waypoints: waypoints,
+                            travelMode: 'DRIVING' // Modo de viaje para trazo de ruta
+                        };
+                      
+                        // Obtiene la ruta y muestra en el mapa
+                        directionsService.route(request, function(response, status) {
+                            if (status === 'OK') {
+                                directionsRenderer.setDirections(response);
+                            } else {
+                                window.alert('Error al mostrar las direcciones: ' + status);
+                            }
+                        });
+                      }
+                      iniciarMap();
+                    </script>";
                 }
             } else {
                 echo "No routes available.";
